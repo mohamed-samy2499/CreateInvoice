@@ -1,0 +1,13 @@
+# Build artifacts
+bin/
+obj/
+# Visual Studio specific files
+.vs/
+.vscode/
+# Temporary files
+tmp/
+# Logs
+logs/
+# Published files
+publish/
+# Any other files you want to ignore
