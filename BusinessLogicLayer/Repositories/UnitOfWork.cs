@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace BusinessLogicLayer.Repositories
 {
-    public class UnitOfWork
+    public class UnitOfWork: IUnitOfWork
     {
         public IInvoiceRepository? InvoiceRepository { get; set; }
         public IInvoiceItemRepository? InvoiceItemRepository { get; set; }
