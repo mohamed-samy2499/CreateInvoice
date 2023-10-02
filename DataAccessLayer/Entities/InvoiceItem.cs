@@ -13,7 +13,7 @@ namespace DataAccessLayer.Entities
         public decimal Quantity { get; set; }
         public decimal Discount { get; set; }
         public int InvoiceId { get; set; }
-        public Invoice Invoice { get; set; }
+        public Invoice? Invoice { get; set; }
 
     }
 }
