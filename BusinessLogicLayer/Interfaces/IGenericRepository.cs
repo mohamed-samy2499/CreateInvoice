@@ -13,5 +13,6 @@ namespace BusinessLogicLayer.Interfaces
         Task<int> Add(T item);
         Task<int> Update(T item);
         Task<int> Delete(T item);
+        Task<bool> EnsureEntityExists(int id);
     }
 }

@@ -16,6 +16,6 @@ namespace DataAccessLayer.Entities
         public decimal Net { get; set; }
         public Store? Store { get; set; }
         public int StoreId { get; set; }
-        public ICollection<InvoiceItem> InvoiceItems { get; set; } = new HashSet<InvoiceItem>();
+        public ICollection<InvoiceItem>? InvoiceItems { get; set; }
     }
 }

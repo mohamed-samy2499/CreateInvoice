@@ -3,6 +3,7 @@ using BusinessLogicLayer.Repositories;
 using DataAccessLayer.Contexts;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using TechnicalTask.Mappers;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,7 +15,11 @@ builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
     .AddEntityFrameworkStores<AppDbContext>();
+//registering the mvc
 builder.Services.AddControllersWithViews();
+//registering the api
+builder.Services.AddControllers();
+
 builder.Services.AddDbContext<AppDbContext>(options =>
                options.UseSqlServer(connectionString)
            );
@@ -23,6 +28,10 @@ builder.Services.AddScoped<IInvoiceRepository, InvoiceRepository>();
 builder.Services.AddScoped<IInvoiceItemRepository, InvoiceItemRepository>();
 builder.Services.AddScoped<IStoreRepository, StoreRepository>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+
+//registering the automappers
+builder.Services.AddAutoMapper(M => M.AddProfile(new InvoiceProfile()));
+
 
 var app = builder.Build();
 
@@ -45,10 +54,12 @@ app.UseRouting();
 
 app.UseAuthentication();
 app.UseAuthorization();
-
+//Configuring Routing for mvc
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
+//Configuring Routing for api
+app.MapControllers();
 app.MapRazorPages();
 
 app.Run();

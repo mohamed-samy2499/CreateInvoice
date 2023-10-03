@@ -42,5 +42,14 @@ namespace BusinessLogicLayer.Repositories
             context.Set<T>().Update(item);
             return await context.SaveChangesAsync();
         }
+        public async Task<bool> EnsureEntityExists(int id)
+        {
+            var result = await context.Set<T>().FindAsync(id);
+            if (result == null)
+            {
+                return false;
+            }
+            return true;
+        }
     }
 }
