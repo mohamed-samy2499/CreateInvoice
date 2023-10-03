@@ -2,7 +2,7 @@
 
 namespace BusinessLogicLayer.Interfaces
 {
-    public interface IInvoiceItemRepository : IGenericRepository<InvoiceItem>
+    public interface IItemRepository : IGenericRepository<Item>
     {
     }
 }

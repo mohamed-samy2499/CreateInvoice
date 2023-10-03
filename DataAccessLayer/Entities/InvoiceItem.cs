@@ -14,6 +14,8 @@ namespace DataAccessLayer.Entities
         public decimal Discount { get; set; }
         public int InvoiceId { get; set; }
         public Invoice? Invoice { get; set; }
+        public int ItemId { get; set; }
+        public Item? Item { get; set; }
 
     }
 }
