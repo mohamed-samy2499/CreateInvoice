@@ -1,15 +1,35 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using DataAccessLayer.Entities;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore;
+using TechnicalTask.Models;
 
 namespace TechnicalTask.Controllers
 {
     public class InvoiceController : Controller
     {
-        // GET: InvoiceController
-        public ActionResult Index()
+        private readonly HttpClient httpClient;
+
+        //inject the HttpClient service to consume our Apis
+        public InvoiceController(IHttpContextAccessor httpContextAccessor)
         {
+            var request = httpContextAccessor.HttpContext.Request;
+            var baseUrl = $"{request.Scheme}://{request.Host.Value}";
+            this.httpClient = new HttpClient();
+            this.httpClient.BaseAddress = new Uri(baseUrl);
+        }
+        // GET: InvoiceController
+        public async Task<ActionResult> Index()
+        {
+            HttpResponseMessage response = await httpClient.GetAsync("Api/Invoice");
+            if (response.IsSuccessStatusCode)
+            {
+                var invoices = await response.Content.ReadAsAsync<List<InvoiceViewModel>>();
+                return View(invoices);
+            }
             return View();
         }
+        
 
         // GET: InvoiceController/Details/5
         public ActionResult Details(int id)

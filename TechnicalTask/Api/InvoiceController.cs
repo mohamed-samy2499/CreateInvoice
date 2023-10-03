@@ -25,9 +25,17 @@ namespace TechnicalTask.Api
         }
         // GET: api/<InvoiceController>
         [HttpGet]
-        public async Task<IEnumerable<Invoice>> Get()
+        public async Task<IEnumerable<InvoiceViewModel>> Get()
         {
-            return await unitOfWork.InvoiceRepository.GetAllWithIncludes();
+            //get the invoices in the table
+            var invoices =  await unitOfWork.InvoiceRepository.GetAllWithIncludes();
+            //map the invoices to invoiceViewModel
+            var invoicesVm = new List<InvoiceViewModel>();
+            foreach(var invoice in invoices)
+            {
+                invoicesVm.Add(Mapper.Map<Invoice,InvoiceViewModel>(invoice));
+            }
+            return invoicesVm;
         }
 
         // GET api/<InvoiceController>/5
@@ -43,12 +51,18 @@ namespace TechnicalTask.Api
         [HttpPost]
         public async Task<StatusCodeResult> Post([FromBody] InvoiceViewModel invoiceVm)
         {
+            //check if the incoice view  model sent is not null
             if (invoiceVm == null)
-            {
                 return BadRequest();
-            }
+            //check if the InvoiceItems are not null
+            if (invoiceVm.InvoiceItems == null)
+                return BadRequest();
+            //map the view model to our invoice model
             var invoice = Mapper.Map<Invoice>(invoiceVm);
-            await unitOfWork.InvoiceRepository.Add(invoice); 
+            //add the invoice to the invoices table
+            await unitOfWork.InvoiceRepository.Add(invoice);
+            //loop through the invoiceitems associated with the invoice and add them to the invoiceitem table
+
             foreach(var invoiceItem in invoiceVm.InvoiceItems)
             {
                 invoiceItem.Id = invoice.Id;
