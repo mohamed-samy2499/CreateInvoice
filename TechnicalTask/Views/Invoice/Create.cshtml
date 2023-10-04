@@ -1,0 +1,141 @@
+﻿@model InvoiceViewModel
+@{
+    ViewData["Title"] = "Create";
+    var Stores = new SelectList(ViewBag.Stores,"Id","Name");
+    var Items = new SelectList(ViewBag.Items,"Id","Name");
+
+}
+
+<h1>Create</h1>
+<br />
+<br />
+<form asp-action="Create" asp-controller="Invoice" enctype="multipart/form-data">
+    <div class="form-group">
+        <label class="col-form-label" asp-for="InvoiceNo"></label>
+        <input type="number" class="form-control" asp-for="InvoiceNo" />
+        <span asp-validation-for="InvoiceNo" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+            <label class="col-form-label" asp-for="StoreId"></label>
+            <select asp-for="StoreId" asp-items="Stores" class="form-control">
+                <option>Choose a Store...</option>
+            </select>
+
+            <span asp-validation-for="StoreId" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label class="col-form-label" asp-for="Date"></label>
+        <input type="date" class="form-control" asp-for="Date" />
+        <span asp-validation-for="Date" class="text-danger"></span>
+    </div>
+
+
+    @*here will be the invoiceitems dynamic table*@
+   <table id="invoiceItemsTable">
+    <thead>
+        <tr>
+            <th>Item</th>
+            <th>Discount</th>
+            <th>Unit</th>
+            <th>Price</th>
+            <th>Net</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody id="invoiceItemsBody">
+        <tr id="fixedRow">
+            <td>
+                <select class="item-select" name="InvoiceItems[0].ItemId">
+                    <!-- Populate the select options with items from your database or API -->
+                    <option value="1">Item 1</option>
+                    <option value="2">Item 2</option>
+                    <option value="3">Item 3</option>
+                </select>
+            </td>
+            <td><input type="number" class="discount-input" name="InvoiceItems[0].Discount" /></td>
+            <td><input type="number" class="unit-input" name="InvoiceItems[0].Unit" /></td>
+            <td><input type="number" class="price-input" name="InvoiceItems[0].Price" /></td>
+            <td><input type="number" class="net-input" name="InvoiceItems[0].Net" readonly /></td>
+            <td></td>
+        </tr>
+    </tbody>
+</table>
+
+<button type="button" id="addRowBtn" class="btn btn-primary">Add Row</button>
+@*end of dynamic table*@
+
+
+
+    <div class="form-group">
+        <label class="col-form-label" asp-for="Total"></label>
+        <input type="number" class="form-control" asp-for="Total" />
+        <span asp-validation-for="Total" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label class="col-form-label" asp-for="Taxes"></label>
+        <input type="number" min="1" max="100" id="TotalTaxesPercentage" class="form-control" asp-for="Taxes" />
+        <span asp-validation-for="Taxes" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label class="col-form-label" asp-for="Net"></label>
+        <input type="number" class="form-control" asp-for="Net" />
+        <span asp-validation-for="Net" class="text-danger"></span>
+    </div>
+    <input type="submit" class="btn btn-primary" value="Add" />
+    <a asp-action="Index" class="btn btn-light">Return to All Invoices Page</a>
+</form>
+
+
+
+<script>
+   $(document).ready(function() {
+    var index = 1;
+
+    // Add row button click event
+    $('#addRowBtn').click(function() {
+        var itemSelect = $('#option').val();
+        var unitInput = $('#unit-input').val();
+        var priceInput = $('#price-input').val();
+        var quantityInput = $('#quantity-input').val();
+        var discountInput = $('#discount-input').val();
+        var totalInput = $('#total-input').val();
+
+        // Create a new row with the entered values
+        var newRow = `
+            <tr>
+                <td>${itemSelect}</td>
+                <td>${unitInput}</td>
+                <td>${priceInput}</td>
+                <td>${quantityInput}</td>
+                <td>${discountInput}</td>
+                <td>${calculateNet(discountInput, unitInput, priceInput)}</td>
+                <td><button type="button" class="btn btn-danger remove-row">Remove</button></td>
+            </tr>
+        `;
+
+        // Append the new row to the table body
+        $('#invoiceItemsBody').append(newRow);
+
+        // Clear the input fields
+        $('.item-select').val('');
+        $('.discount-input').val('');
+        $('.unit-input').val('');
+        $('.price-input').val('');
+
+        index++;
+    });
+
+    // Remove row button click event
+    $(document).on('click', '.remove-row', function() {
+        $(this).closest('tr').remove();
+    });
+
+    // Function to calculate the net value
+    function calculateNet(discount, unit, price) {
+        // Perform your calculation here
+        // For example:
+        var net = unit * price - discount;
+        return net;
+    }
+});
+</script>

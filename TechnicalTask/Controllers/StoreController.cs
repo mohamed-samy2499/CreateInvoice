@@ -6,78 +6,76 @@ using TechnicalTask.Models;
 
 namespace TechnicalTask.Controllers
 {
-    public class InvoiceController : Controller
+    public class StoreController : Controller
     {
         private readonly HttpClient httpClient;
 
         //inject the HttpClient service to consume our Apis
-        public InvoiceController(IHttpContextAccessor httpContextAccessor)
+        public StoreController(IHttpContextAccessor httpContextAccessor)
         {
             var request = httpContextAccessor.HttpContext.Request;
             var baseUrl = $"{request.Scheme}://{request.Host.Value}";
             this.httpClient = new HttpClient();
             this.httpClient.BaseAddress = new Uri(baseUrl);
         }
-        // GET: InvoiceController
+        // GET: StoreController
         public async Task<ActionResult> Index()
         {
-            HttpResponseMessage response = await httpClient.GetAsync("Api/Invoice");
+            HttpResponseMessage response = await httpClient.GetAsync("Api/Store");
             if (response.IsSuccessStatusCode)
             {
-                var invoices = await response.Content.ReadAsAsync<List<InvoiceViewModel>>();
-                return View(invoices);
+                var stores = await response.Content.ReadAsAsync<List<Store>>();
+                return View(stores);
             }
             return View();
         }
         
 
-        // GET: InvoiceController/Details/5
-        public ActionResult Details(int id)
+        // GET: StoreController/Details/5
+        public async Task<ActionResult> Details(int id)
         {
-            return View();
-        }
-
-        // GET: InvoiceController/Create
-        public async Task<ActionResult> Create()
-        {
-            HttpResponseMessage response = await httpClient.GetAsync($"Api/Store/Details");
-            HttpResponseMessage response1 = await httpClient.GetAsync($"Api/Item");
-
-            if (response.IsSuccessStatusCode && response1.IsSuccessStatusCode)
+            HttpResponseMessage response = await httpClient.GetAsync($"Api/Store/{id}");
+            if (response.IsSuccessStatusCode)
             {
                 var stores = await response.Content.ReadAsAsync<List<Store>>();
-                var items = await response1.Content.ReadAsAsync<List<Item>>();
-
-                ViewBag.Stores = stores;
-                ViewBag.Items = items;
-                return View();
+                return View(stores);
             }
             return View();
-
         }
 
-        // POST: InvoiceController/Create
+        // GET: StoreController/Create
+        public ActionResult Create()
+        {
+            return View();
+        }
+
+        // POST: StoreController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Create(InvoiceItemViewModel invoiceVm)
+        public async Task<ActionResult> Create(Store store)
         {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
-        }
 
-        // GET: InvoiceController/Edit/5
+                HttpResponseMessage response = await httpClient.PostAsJsonAsync("Api/Store", store);
+
+                if (response.IsSuccessStatusCode)
+                {
+                // Store created successfully
+                    return RedirectToAction(nameof(Index));
+                }
+                else
+                {
+                    // Handle the error case
+                    return View("Error");
+                }
+            }
+
+        // GET: StoreController/Edit/5
         public ActionResult Edit(int id)
         {
             return View();
         }
 
-        // POST: InvoiceController/Edit/5
+        // POST: StoreController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Edit(int id, IFormCollection collection)
@@ -92,13 +90,13 @@ namespace TechnicalTask.Controllers
             }
         }
 
-        // GET: InvoiceController/Delete/5
+        // GET: StoreController/Delete/5
         public ActionResult Delete(int id)
         {
             return View();
         }
 
-        // POST: InvoiceController/Delete/5
+        // POST: StoreController/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Delete(int id, IFormCollection collection)

@@ -1,0 +1,19 @@
+﻿@model Store
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h1>Create</h1>
+<br />
+<br />
+<form asp-action="Create" asp-controller="Store" enctype="multipart/form-data">
+    <div class="form-group">
+        <label class="col-form-label" asp-for="Name"></label>
+        <input class="form-control" asp-for="Name" />
+        <span asp-validation-for="Name" class="text-danger"></span>
+    </div>
+
+    <input type="submit" class="btn btn-primary" value="Add" />
+    <a asp-action="Index" class="btn btn-light">Return to All Stores Page</a>
+</form>
+
