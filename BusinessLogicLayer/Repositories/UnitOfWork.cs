@@ -8,15 +8,17 @@ namespace BusinessLogicLayer.Repositories
         public IInvoiceItemRepository? InvoiceItemRepository { get; set; }
         public IStoreRepository? StoreRepository { get; set; }
         public IItemRepository? ItemRepository { get; set; }
+        public IUnitRepository? UnitRepository { get; set; }
 
 
         public UnitOfWork(IInvoiceRepository invoiceRepository, IInvoiceItemRepository invoiceItemRepository,
-            IStoreRepository storeRepository, IItemRepository itemRepository)
+            IStoreRepository storeRepository, IItemRepository itemRepository, IUnitRepository unitRepository)
         {
             InvoiceRepository = invoiceRepository;
             InvoiceItemRepository = invoiceItemRepository;
             StoreRepository = storeRepository;
             ItemRepository = itemRepository;
+            UnitRepository = unitRepository;
         }
 
 

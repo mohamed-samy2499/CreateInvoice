@@ -1,139 +1,75 @@
-﻿@model InvoiceItemViewModel
+﻿@model InvoiceItemViewModel 
+                <tr>
+                    <td>
+                        <div class="form-group">
+                            <label class="col-form-label" asp-for="ItemId"></label>
+                            <select asp-for="ItemId" asp-items="@Model.AvailableItems"
+                            class="form-control" >
+                            <option>Choose an Item...</option>
+                            </select>
 
-<tr>
-    <td>
-    <div class="form-group">
-            <label class="col-form-label" asp-for="@Model.ItemId"></label>
-            <select asp-for="@Model.ItemId" asp-items="@Model.AvailableItems" class="form-control">
-                <option>Choose an Item...</option>
-            </select>
-
-            <span asp-validation-for="@Model.ItemId" class="text-danger"></span>
-    </div>
-        @*@Html.DropDownListFor(x => Model.ItemId, Model.AvailableItems, "Select Item", new { @class = "form-control" })*@
-    </td>
-    <td>
-        <div class="form-group">
-            <label class="col-form-label" asp-for="@Model.Unit"></label>
-            <select asp-for="@Model.Unit" asp-items="@Model.AvailableUnits" class="form-control">
-                <option>Choose a Unit...</option>
-            </select>
-
-            <span asp-validation-for="@Model.Unit" class="text-danger"></span>
-    </div>
-        @*@Html.DropDownListFor(x => Model.Unit, Model.AvailableUnits, "Select Unit", new { @class = "form-control" })*@
-    </td>
-    <td>
-        <div class="form-group">
-        <label class="col-form-label" asp-for="@Model.Quantity"></label>
-        <input type="number" class="form-control" asp-for="@Model.Quantity" />
-        <span asp-validation-for="@Model.Quantity" class="text-danger"></span>
-    </div>
-        @*@Html.TextBoxFor(x => Model.Quantity, new { @class = "form-control" })*@
-    </td>
-    <td>
-        <div class="form-group">
-        <label class="col-form-label" asp-for="@Model.Price"></label>
-        <input type="number" class="form-control" asp-for="@Model.Price" />
-        <span asp-validation-for="@Model.Price" class="text-danger"></span>
-    </div>
-        @*@Html.TextBoxFor(x => Model.Price, new { @class = "form-control" })*@
-    </td>
-    <td>
-        <div class="form-group">
-        <label class="col-form-label" asp-for="@Model.InvoiceItemTotal"></label>
-        <input type="number" class="form-control" asp-for="@Model.InvoiceItemTotal" />
-        <span asp-validation-for="@Model.InvoiceItemTotal" class="text-danger"></span>
-    </div>
-        @*@Html.TextBoxFor(x => Model.Total, new { @class = "form-control", @readonly = "readonly" })*@
-    </td>
-    <td>
-        <div class="form-group">
-        <label class="col-form-label" asp-for="@Model.Discount"></label>
-        <input type="number" class="form-control" asp-for="@Model.Discount" />
-        <span asp-validation-for="@Model.Discount" class="text-danger"></span>
-    </div>
-        @*@Html.TextBoxFor(x => Model.Discount, new { @class = "form-control" })*@
-    </td>
-    <td>
-         <div class="form-group">
-        <label class="col-form-label" asp-for="@Model.InvoiceItemNet"></label>
-        <input type="number" class="form-control" asp-for="@Model.InvoiceItemNet" />
-        <span asp-validation-for="@Model.InvoiceItemNet" class="text-danger"></span>
-    </div>
-        @*@Html.TextBoxFor(x => Model.Net, new { @class = "form-control", @readonly = "readonly" })*@
-    </td>
-</tr>
-
-@*@model InvoiceViewModel
-
-@foreach (var item in Model.InvoiceItemsViewModel)
-            {
-<tr>
-    <td>
-        @Html.DropDownListFor(x => item.ItemId, item.AvailableItems, "Select Item", new { @class = "form-control" })
-    </td>
-    <td>
-        @Html.DropDownListFor(x => item.Unit, item.AvailableUnits, "Select Unit", new { @class = "form-control" })
-    </td>
-    <td>
-        @Html.TextBoxFor(x => item.Quantity, new { @class = "form-control" })
-    </td>
-    <td>
-        @Html.TextBoxFor(x => item.Price, new { @class = "form-control" })
-    </td>
-    <td>
-        @Html.TextBoxFor(x => item.Total, new { @class = "form-control", @readonly = "readonly" })
-    </td>
-    <td>
-        @Html.TextBoxFor(x => item.Discount, new { @class = "form-control" })
-    </td>
-    <td>
-        @Html.TextBoxFor(x => item.Net, new { @class = "form-control", @readonly = "readonly" })
-    </td>
-</tr>
-            }*@
-
-@*@model InvoiceViewModel
-
-<table id="invoiceitemTable">
-    <thead>
-        <tr>
-            <th>item</th>
-            <th>Unit</th>
-
-            <th>Quantity</th>
-            <th>Price</th>
-
-            <th>Total</th>
-            <th>Discount</th>
-            <th>Net</th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model.InvoiceitemsViewModel)
-        {
-            <tr>
-                <td>
-                    <select asp-for="item.itemId" asp-items="item.Availableitems">
-                        <option value="">Select an item...</option>
+                            <span asp-validation-for="ItemId" class="text-danger"></span>
+                        </div>
+                    @*@Html.DropDownListFor(x => Model.ItemId, Model.AvailableItems, "Select Item", new { @class = "form-control" })*@
+                    </td>
+                    <td>
+                    <div class="form-group">
+                    <label class="col-form-label" asp-for="Unit"></label>
+                    <select asp-for="Unit" asp-items="@Model.AvailableUnits" class="form-control"
+                    id = "InvoiceItemsViewModelUnit" >
+                    <option>Choose a Unit...</option>
                     </select>
-                </td>
-                <td>
-                    <select asp-for="item.Unit" asp-items="item.AvailableUnits">
-                        <option value="">Select  a Unit...</option>
-                    </select>
-                </td>
-                <td><input asp-for="item.Quantity" /></td>
-                <td><input asp-for="item.Price" /></td>
 
-                <td><input asp-for="item.Total" /></td>
-                <td><input asp-for="item.Discount" /></td>
-                <td><input asp-for="item.Net" /></td>
-                <td><button type="button" class="btn btn-danger" onclick="removeRow(this)">Remove</button></td>
-            </tr>
-        }
-    </tbody>
-</table>
-<button type="button" class="btn btn-primary" onclick="addRow()">Add</button>*@
+                    <span asp-validation-for="Unit" class="text-danger"></span>
+                    </div>
+                    @*@Html.DropDownListFor(x => Model.Unit, Model.AvailableUnits, "Select Unit", new { @class = "form-control" })*@
+                    </td>
+                    <td>
+                    <div class="form-group">
+                    <label class="col-form-label" asp-for="Quantity"></label>
+                    <input type="number" class="form-control" asp-for="Quantity"
+                    id = "InvoiceItemsViewModelQuantity" />
+                    <span asp-validation-for="Quantity" class="text-danger"></span>
+                    </div>
+                    @*@Html.TextBoxFor(x => Model.Quantity, new { @class = "form-control" })*@
+                    </td>
+                    <td>
+                    <div class="form-group">
+                    <label class="col-form-label" asp-for="Price"></label>
+                    <input type="number" class="form-control" asp-for="Price"
+                    id = "InvoiceItemsViewModelPrice" />
+                    <span asp-validation-for="Price" class="text-danger"></span>
+                    </div>
+                    @*@Html.TextBoxFor(x => Model.Price, new { @class = "form-control" })*@
+                    </td>
+                    <td>
+                    <div class="form-group">
+                    <label class="col-form-label" asp-for="InvoiceItemTotal"></label>
+                    <input type="number" class="form-control" asp-for="InvoiceItemTotal"
+                    id = "InvoiceItemsViewModelInvoiceItemTotal" />
+                    <span asp-validation-for="InvoiceItemTotal" class="text-danger"></span>
+                    </div>
+                    @*@Html.TextBoxFor(x => Model.Total, new { @class = "form-control", @readonly = "readonly" })*@
+                    </td>
+                    <td>
+                    <div class="form-group">
+                    <label class="col-form-label" asp-for="Discount"></label>
+                    <input type="number" class="form-control" asp-for="Discount"
+                    id = "InvoiceItemsViewModelDiscount" />
+                    <span asp-validation-for="Discount" class="text-danger"></span>
+                    </div>
+                    @*@Html.TextBoxFor(x => Model.Discount, new { @class = "form-control" })*@
+                    </td>
+                    <td>
+                    <div class="form-group">
+                    <label class="col-form-label" asp-for="InvoiceItemNet"></label>
+                    <input type="number" class="form-control" asp-for="InvoiceItemNet"
+                    id = "InvoiceItemsViewModelInvoiceItemNet"  />
+                    <span asp-validation-for="InvoiceItemNet" class="text-danger"></span>
+                    </div>
+                    @*@Html.TextBoxFor(x => Model.Net, new { @class = "form-control", @readonly = "readonly" })*@
+                    </td>
+                        <td>
+        <button type="button" class="btn btn-danger removeRowButton">Remove</button>
+    </td>
+                </tr>

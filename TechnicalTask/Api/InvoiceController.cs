@@ -61,19 +61,21 @@ namespace TechnicalTask.Api
             //map the view model to our invoice model
             var invoice = Mapper.Map<Invoice>(invoiceVm);
             //add the invoice to the invoices table
+            invoice.Store = await unitOfWork.StoreRepository.GetById(invoiceVm.StoreId);
             await unitOfWork.InvoiceRepository.Add(invoice);
             //loop through the invoiceitems associated with the invoice and add them to the invoiceitem table
 
             foreach(var invoiceItemVm in invoiceVm.InvoiceItemsViewModel)
             {
-                invoiceItemVm.ItemId = invoice.Id;
+                invoiceItemVm.InvoiceViewModelId = invoice.Id;
+                invoiceItemVm.Item = await unitOfWork.ItemRepository.GetById(invoiceItemVm.ItemId);
                 var invoiceItem = Mapper.Map<InvoiceItemViewModel, InvoiceItem>(invoiceItemVm);
-                await unitOfWork.InvoiceItemRepository.Add(invoiceItem);
+                var res = await unitOfWork.InvoiceItemRepository.Add(invoiceItem);
             }
             return Ok();
         }
         [HttpGet("AddInvoiceItemRow/{id}")]
-        public  async Task<List<InvoiceItemViewModel?>> AddInvoiceItemRow(int index)
+        public  async Task<InvoiceItemViewModel?> AddInvoiceItemRow(int index)
             {
             var viewModel = new InvoiceItemViewModel
             {
@@ -89,12 +91,8 @@ namespace TechnicalTask.Api
                     // Add more units as needed
                 }
             };
-            viewModel.Id = new Guid();
-            var currentItems = new List<InvoiceItemViewModel>(); // Replace this with your actual source of items
 
-            // Add the new item to the existing items
-            currentItems.Add(viewModel);
-            return currentItems;
+            return  viewModel;
         }
         // PUT api/<InvoiceController>/5
         [HttpPut("{id}")]

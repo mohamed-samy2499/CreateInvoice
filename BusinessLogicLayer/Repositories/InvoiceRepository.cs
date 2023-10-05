@@ -15,7 +15,7 @@ namespace BusinessLogicLayer.Repositories
 
         public async Task<IEnumerable<Invoice>> GetAllWithIncludes()
         {
-            return await context.Invoices.Include(i => i.InvoiceItems)
+            return await context.Set<Invoice>()
                 .Include(i => i.Store).ToListAsync();
         }
 

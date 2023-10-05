@@ -8,6 +8,7 @@ namespace BusinessLogicLayer.Interfaces
         public IInvoiceRepository InvoiceRepository { get; set; }
         public IStoreRepository StoreRepository { get; set; }
         public IItemRepository ItemRepository { get; set; }
+        public IUnitRepository UnitRepository { get; set; }
 
     }
 }

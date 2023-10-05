@@ -16,7 +16,7 @@ namespace TechnicalTask.Models
         public InvoiceViewModel? InvoiceViewModel { get; set; }
         public int ItemId { get; set; }
         public Item? Item { get; set; }
-        public IEnumerable<SelectListItem>? AvailableItems { get; set; }
-        public IEnumerable<SelectListItem>? AvailableUnits { get; set; }
+        public IEnumerable<SelectListItem>? AvailableItems { get; set; } = new List<SelectListItem>();
+        public IEnumerable<SelectListItem>? AvailableUnits { get; set; } = new List<SelectListItem>();
     }
 }

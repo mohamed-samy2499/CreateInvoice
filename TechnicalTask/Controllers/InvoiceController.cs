@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore;
 using TechnicalTask.Models;
 using AutoMapper;
-
+using Newtonsoft.Json;
 namespace TechnicalTask.Controllers
 {
     public class InvoiceController : Controller
@@ -59,6 +59,10 @@ namespace TechnicalTask.Controllers
                 ViewBag.Items = items;
                 return View(invoiceVm);
             }
+            var stores1 = await response.Content.ReadAsAsync<List<Store>>();
+            var items1 = await response1.Content.ReadAsAsync<List<Item>>();
+            ViewBag.Stores = stores1;
+            ViewBag.Items = items1;
             return View();
 
         }
@@ -68,6 +72,19 @@ namespace TechnicalTask.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Create(InvoiceViewModel invoiceVm)
         {
+            // Manually bind the InvoiceItemsViewModel from the form data
+            var invoiceItemsViewModel = new List<InvoiceItemViewModel>();
+            foreach (var key in Request.Form.Keys)
+            {
+                if (key.StartsWith("InvoiceItemsViewModel"))
+                {
+                    var val = Request.Form[key].FirstOrDefault();
+                    invoiceItemsViewModel = JsonConvert.DeserializeObject<List<InvoiceItemViewModel>>(val);
+
+                    invoiceVm.InvoiceItemsViewModel = invoiceItemsViewModel;
+                    break;
+                }
+            }
             HttpResponseMessage response = await httpClient.PostAsJsonAsync("Api/Invoice", invoiceVm);
             if (response.IsSuccessStatusCode)
             {
@@ -77,7 +94,20 @@ namespace TechnicalTask.Controllers
             else
             {
                 // Handle the error case
-                return View(invoiceVm);
+
+                HttpResponseMessage response1 = await httpClient.GetAsync($"Api/Store");
+                HttpResponseMessage response2 = await httpClient.GetAsync($"Api/Item");
+
+                if (response1.IsSuccessStatusCode && response2.IsSuccessStatusCode)
+                {
+                    var stores = await response1.Content.ReadAsAsync<List<Store>>();
+                    var items = await response2.Content.ReadAsAsync<List<Item>>();
+
+                    ViewBag.Stores = stores;
+                    ViewBag.Items = items;
+                    return View(invoiceVm);
+                }
+                return View("Error");
             }
         }
         [HttpGet]
