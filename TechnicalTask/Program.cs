@@ -1,6 +1,7 @@
 using BusinessLogicLayer.Interfaces;
 using BusinessLogicLayer.Repositories;
 using DataAccessLayer.Contexts;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using TechnicalTask.Mappers;
@@ -33,7 +34,23 @@ builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 //registering the automappers
 builder.Services.AddAutoMapper(M => M.AddProfile(new InvoiceProfile()));
-
+builder.Services.AddAutoMapper(M => M.AddProfile(new InvoiceItemProfile()));
+//builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+//                .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, options =>
+//                {
+//                    options.LoginPath = new PathString("/Account/Login");
+//                    options.AccessDeniedPath = new PathString("/Home/error");
+//                });
+//builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
+//{
+//    options.Password.RequireDigit = true;
+//    options.Password.RequireLowercase = true;
+//    options.Password.RequireNonAlphanumeric = true;
+//    options.Password.RequireUppercase = true;
+//    options.Password.RequiredLength = 4;
+//    options.SignIn.RequireConfirmedAccount = false;
+//}).AddEntityFrameworkStores<AppDbContext>()
+//  .AddTokenProvider<DataProtectorTokenProvider<IdentityUser>>(TokenOptions.DefaultProvider);
 
 var app = builder.Build();
 

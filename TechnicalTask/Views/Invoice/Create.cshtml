@@ -28,44 +28,93 @@
         <input type="date" class="form-control" asp-for="Date" />
         <span asp-validation-for="Date" class="text-danger"></span>
     </div>
-
-
     @*here will be the invoiceitems dynamic table*@
-   <table id="invoiceItemsTable">
-    <thead>
-        <tr>
-            <th>Item</th>
-            <th>Discount</th>
-            <th>Unit</th>
-            <th>Price</th>
-            <th>Net</th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody id="invoiceItemsBody">
-        <tr id="fixedRow">
-            <td>
-                <select class="item-select" name="InvoiceItems[0].ItemId">
-                    <!-- Populate the select options with items from your database or API -->
-                    <option value="1">Item 1</option>
-                    <option value="2">Item 2</option>
-                    <option value="3">Item 3</option>
-                </select>
-            </td>
-            <td><input type="number" class="discount-input" name="InvoiceItems[0].Discount" /></td>
-            <td><input type="number" class="unit-input" name="InvoiceItems[0].Unit" /></td>
-            <td><input type="number" class="price-input" name="InvoiceItems[0].Price" /></td>
-            <td><input type="number" class="net-input" name="InvoiceItems[0].Net" readonly /></td>
-            <td></td>
-        </tr>
-    </tbody>
-</table>
+   <table id="invoiceTable" class="table">
+        <thead>
+            <tr>
+                <th>Item</th>
+                <th>Unit</th>
+                <th>Quantity</th>
+                <th>Price</th>
+                <th>Total</th>
+                <th>Discount</th>
+                <th>Net</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.InvoiceItemsViewModel)
+            {
+                <tr>
+                    <td>
+                        <div class="form-group">
+                            <label class="col-form-label" asp-for="@item.ItemId"></label>
+                            <select asp-for="@item.ItemId" asp-items="@item.AvailableItems" class="form-control" id = "InvoiceItemsViewModelItemId">
+                            <option>Choose an Item...</option>
+                            </select>
 
-<button type="button" id="addRowBtn" class="btn btn-primary">Add Row</button>
+                            <span asp-validation-for="@item.ItemId" class="text-danger"></span>
+                        </div>
+                    @*@Html.DropDownListFor(x => Model.ItemId, Model.AvailableItems, "Select Item", new { @class = "form-control" })*@
+                    </td>
+                    <td>
+                    <div class="form-group">
+                    <label class="col-form-label" asp-for="@item.Unit"></label>
+                    <select asp-for="@item.Unit" asp-items="@item.AvailableUnits" class="form-control"id = "InvoiceItemsViewModelUnit">
+                    <option>Choose a Unit...</option>
+                    </select>
+
+                    <span asp-validation-for="@item.Unit" class="text-danger"></span>
+                    </div>
+                    @*@Html.DropDownListFor(x => Model.Unit, Model.AvailableUnits, "Select Unit", new { @class = "form-control" })*@
+                    </td>
+                    <td>
+                    <div class="form-group">
+                    <label class="col-form-label" asp-for="@item.Quantity"></label>
+                    <input type="number" class="form-control" asp-for="@item.Quantity" id = "InvoiceItemsViewModelQuantity"/>
+                    <span asp-validation-for="@item.Quantity" class="text-danger"></span>
+                    </div>
+                    @*@Html.TextBoxFor(x => Model.Quantity, new { @class = "form-control" })*@
+                    </td>
+                    <td>
+                    <div class="form-group">
+                    <label class="col-form-label" asp-for="@item.Price"></label>
+                    <input type="number" class="form-control" asp-for="@item.Price" id = "InvoiceItemsViewModelPrice" />
+                    <span asp-validation-for="@item.Price" class="text-danger"></span>
+                    </div>
+                    @*@Html.TextBoxFor(x => Model.Price, new { @class = "form-control" })*@
+                    </td>
+                    <td>
+                    <div class="form-group">
+                    <label class="col-form-label" asp-for="@item.InvoiceItemTotal"></label>
+                    <input type="number" class="form-control" asp-for="@item.InvoiceItemTotal" id = "InvoiceItemsViewModelInvoiceItemTotal"/>
+                    <span asp-validation-for="@item.InvoiceItemTotal" class="text-danger"></span>
+                    </div>
+                    @*@Html.TextBoxFor(x => Model.Total, new { @class = "form-control", @readonly = "readonly" })*@
+                    </td>
+                    <td>
+                    <div class="form-group">
+                    <label class="col-form-label" asp-for="@item.Discount"></label>
+                    <input type="number" class="form-control" asp-for="@item.Discount" id = "InvoiceItemsViewModelDiscount"/>
+                    <span asp-validation-for="@item.Discount" class="text-danger"></span>
+                    </div>
+                    @*@Html.TextBoxFor(x => Model.Discount, new { @class = "form-control" })*@
+                    </td>
+                    <td>
+                    <div class="form-group">
+                    <label class="col-form-label" asp-for="@item.InvoiceItemNet"></label>
+                    <input type="number" class="form-control" asp-for="@item.InvoiceItemNet" id = "InvoiceItemsViewModelInvoiceItemNet" />
+                    <span asp-validation-for="@item.InvoiceItemNet" class="text-danger"></span>
+                    </div>
+                    @*@Html.TextBoxFor(x => Model.Net, new { @class = "form-control", @readonly = "readonly" })*@
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    
+    <button type="button" id="addRowButton" class="btn btn-primary">Add Item</button>
 @*end of dynamic table*@
-
-
-
+<input type="hidden" id="InvoiceItemsViewModel" name="InvoiceItemsViewModel" />
     <div class="form-group">
         <label class="col-form-label" asp-for="Total"></label>
         <input type="number" class="form-control" asp-for="Total" />
@@ -81,61 +130,72 @@
         <input type="number" class="form-control" asp-for="Net" />
         <span asp-validation-for="Net" class="text-danger"></span>
     </div>
-    <input type="submit" class="btn btn-primary" value="Add" />
-    <a asp-action="Index" class="btn btn-light">Return to All Invoices Page</a>
+     <button type="submit" class="btn btn-success">Save Invoice</button>
+    <a asp-action="Index" class="btn btn-light">Cancel</a>
 </form>
 
+@section Scripts {
 
+    <script>
+        $(document).ready(function () {
+            // Initialize the dynamic table
+            var rowIndex = @Model.InvoiceItemsViewModel.Count;
+            var invoiceItemsArray = [];
+            // Add a row to the table
+            function addRow() {
+                $.ajax({
+                    url: '@Url.Action("AddInvoiceItemRow", "Invoice")',
+                    type: 'GET',
+                    data: { index: rowIndex },
+                    success: function (result) {
+                        $('#invoiceTable tbody').append(result);
+                        var newItem = {
+                        ItemId: null,
+                        Unit: null,
+                        Quantity: null,
+                        Price: null,
+                        Discount:null,
+                        InvoiceItemTotal: null,
+                        InvoiceItemNet: null
+                    };
+                    invoiceItemsArray.push(newItem);
+                        rowIndex++;
+                    },
+                    error: function (xhr, status, error) {
+                        console.log(error);
+                    }
+                });
+            }
 
-<script>
-   $(document).ready(function() {
-    var index = 1;
+            // Attach event handler to the add row button
+            $('#addRowButton').on('click', function () {
+                addRow();
+            });
+            $('form').on('submit', function () {
+            // Bind the array of InvoiceItemViewModel objects to the InvoiceItemsViewModel property
+            $('input[id^="InvoiceItemsViewModel"]').each(function (index) {
+                //var propertyName = $(this).attr('name').replace('InvoiceItemsViewModel[0].', '');
+                invoiceItemsArray[index][propertyName] = $(this).val(); // Adjust the index based on your property count
+            });
+            // Set the InvoiceItemsViewModel property with the array
+            var invoiceItemsJson = JSON.stringify(invoiceItemsArray);
+            console.log(invoiceItemsJson)
+            $('#InvoiceItemsViewModel').val(invoiceItemsJson);
+        });
+        });
 
-    // Add row button click event
-    $('#addRowBtn').click(function() {
-        var itemSelect = $('#option').val();
-        var unitInput = $('#unit-input').val();
-        var priceInput = $('#price-input').val();
-        var quantityInput = $('#quantity-input').val();
-        var discountInput = $('#discount-input').val();
-        var totalInput = $('#total-input').val();
+        // Remove row button click event
+        //$(document).on('click', '.remove-row', function() {
+        //    $(this).closest('tr').remove();
+        //});
 
-        // Create a new row with the entered values
-        var newRow = `
-            <tr>
-                <td>${itemSelect}</td>
-                <td>${unitInput}</td>
-                <td>${priceInput}</td>
-                <td>${quantityInput}</td>
-                <td>${discountInput}</td>
-                <td>${calculateNet(discountInput, unitInput, priceInput)}</td>
-                <td><button type="button" class="btn btn-danger remove-row">Remove</button></td>
-            </tr>
-        `;
+        //// Function to calculate the net value
+        //function calculateNet(discount, unit, price) {
+        //    // Perform your calculation here
+        //    // For example:
+        //    var net =  price * (discount/100);
+        //    return net;
+        //}
+    </script>
+}
 
-        // Append the new row to the table body
-        $('#invoiceItemsBody').append(newRow);
-
-        // Clear the input fields
-        $('.item-select').val('');
-        $('.discount-input').val('');
-        $('.unit-input').val('');
-        $('.price-input').val('');
-
-        index++;
-    });
-
-    // Remove row button click event
-    $(document).on('click', '.remove-row', function() {
-        $(this).closest('tr').remove();
-    });
-
-    // Function to calculate the net value
-    function calculateNet(discount, unit, price) {
-        // Perform your calculation here
-        // For example:
-        var net = unit * price - discount;
-        return net;
-    }
-});
-</script>

@@ -12,6 +12,6 @@ namespace TechnicalTask.Models
         public decimal Net { get; set; }
         public Store? Store { get; set; }
         public int StoreId { get; set; }
-        public ICollection<InvoiceItem>? InvoiceItems { get; set; }
+        public ICollection<InvoiceItemViewModel>? InvoiceItemsViewModel { get; set; } = new List<InvoiceItemViewModel>();
     }
 }

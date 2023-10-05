@@ -4,6 +4,7 @@ using AutoMapper;
 using BusinessLogicLayer.Interfaces;
 using DataAccessLayer.Entities;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
 using TechnicalTask.Models;
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -28,7 +29,7 @@ namespace TechnicalTask.Api
         public async Task<IEnumerable<InvoiceViewModel>> Get()
         {
             //get the invoices in the table
-            var invoices =  await unitOfWork.InvoiceRepository.GetAllWithIncludes();
+            var invoices =  await unitOfWork.InvoiceRepository.GetAll();
             //map the invoices to invoiceViewModel
             var invoicesVm = new List<InvoiceViewModel>();
             foreach(var invoice in invoices)
@@ -55,7 +56,7 @@ namespace TechnicalTask.Api
             if (invoiceVm == null)
                 return BadRequest();
             //check if the InvoiceItems are not null
-            if (invoiceVm.InvoiceItems == null)
+            if (invoiceVm.InvoiceItemsViewModel == null)
                 return BadRequest();
             //map the view model to our invoice model
             var invoice = Mapper.Map<Invoice>(invoiceVm);
@@ -63,14 +64,38 @@ namespace TechnicalTask.Api
             await unitOfWork.InvoiceRepository.Add(invoice);
             //loop through the invoiceitems associated with the invoice and add them to the invoiceitem table
 
-            foreach(var invoiceItem in invoiceVm.InvoiceItems)
+            foreach(var invoiceItemVm in invoiceVm.InvoiceItemsViewModel)
             {
-                invoiceItem.Id = invoice.Id;
+                invoiceItemVm.ItemId = invoice.Id;
+                var invoiceItem = Mapper.Map<InvoiceItemViewModel, InvoiceItem>(invoiceItemVm);
                 await unitOfWork.InvoiceItemRepository.Add(invoiceItem);
             }
             return Ok();
         }
+        [HttpGet("AddInvoiceItemRow/{id}")]
+        public  async Task<List<InvoiceItemViewModel?>> AddInvoiceItemRow(int index)
+            {
+            var viewModel = new InvoiceItemViewModel
+            {
+                AvailableItems =   unitOfWork.ItemRepository.GetAll().Result.Select(i => new SelectListItem
+                {
+                    Value = i.Id.ToString(),
+                    Text = i.Name
+                }),
+                AvailableUnits = new List<SelectListItem>
+                {
+                    new SelectListItem { Value = "1", Text = "us" },
+                    new SelectListItem { Value = "2", Text = "egp" },
+                    // Add more units as needed
+                }
+            };
+            viewModel.Id = new Guid();
+            var currentItems = new List<InvoiceItemViewModel>(); // Replace this with your actual source of items
 
+            // Add the new item to the existing items
+            currentItems.Add(viewModel);
+            return currentItems;
+        }
         // PUT api/<InvoiceController>/5
         [HttpPut("{id}")]
         public void Put(int id, [FromBody] string value)

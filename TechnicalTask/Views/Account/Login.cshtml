@@ -1,0 +1,63 @@
+﻿@model LoginViewModel
+@{
+    ViewData["Title"] = "Login";
+    Layout = "~/Views/Shared/_AuthLayout.cshtml";
+}
+
+ <div class="login-box">
+        <div class="logo">
+            <a href="javascript:void(0);">Admin<b>BSB</b></a>
+            <small>@ViewData["Title"]</small>
+        </div>
+        <div class="card">
+            <div class="body">
+                <form id="sign_in" asp-action="Login" asp-controller="Account">
+                    <div class="msg">Sign in to start your session</div>
+                    <div class="input-group">
+                        <span class="input-group-addon">
+                            <i class="material-icons">email</i>
+                        </span>
+                        <div class="form-line">
+                            <input type="text" class="form-control" asp-for="Email" placeholder="Email Address" autofocus>
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <span class="input-group-addon">
+                            <i class="material-icons">lock</i>
+                        </span>
+                        <div class="form-line">
+                            <input type="password" class="form-control" asp-for="Password" placeholder="Password" required>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-8 p-t-5">
+                            <input type="checkbox" asp-for="RememberMe" id="rememberme" class="filled-in chk-col-pink">
+                            <label for="rememberme">Remember Me</label>
+                        </div>
+                        <div class="col-xs-4">
+                            <input type="submit" class="btn btn-block bg-pink waves-effect" value="Sign In"/>
+                        </div>
+                    </div>
+                    <div class="row m-t-15 m-b--20">
+                        <div class="col-xs-6">
+                            <a asp-action="Register" asp-controller="Account">Register Now!</a>
+                        </div>
+                        <div class="col-xs-6 align-right">
+                            <a asp-action="ForgotPassword" asp-controller="Account">Forgot Password?</a>
+                        </div>
+                    </div>
+                   
+                </form>
+            </div>
+        </div>
+        <div class="card">
+            <div class="body">
+                 <div class="row m-t-15 m-b--20">
+                        <div class="col-xs-12 btn btn-info ">
+                            <a asp-action="Index" class="text-danger " asp-controller="Home">Guest Login</a>
+                        </div>
+                       
+                    </div>
+            </div>
+        </div>
+    </div>
