@@ -25,35 +25,32 @@ namespace TechnicalTask.Api
         }
         // GET: api/<StoreController>
         [HttpGet]
-        public async Task<IEnumerable<Store>> Get()
+        public async Task<IActionResult> Get()
         {
             //get the Stores in the table
-            return  await unitOfWork.StoreRepository.GetAll();
-        }
-        // GET: api/<StoreController>/Details
-        [HttpGet("Details")]
-        public async Task<IEnumerable<Store>> GetDetails()
-        {
-            //get the Stores in the table
-            return await unitOfWork.StoreRepository.GetAllWithInvoicesAsync();
-        }
-        // GET api/<StoreController>/5
-        [HttpGet("{id}"),EnsureInvoiceExists]
+            var stores = await unitOfWork.StoreRepository.GetAll();
+            //map it to the view model
+            var storesVm = Mapper.Map<IEnumerable<Store>, IEnumerable<StoreViewModel>>(stores);
+            //var storesVm = stores.Select(i => new StoreViewModel
+            //{
+            //    Id = i.Id,
+            //    Name = i.Name
+            //});
 
-        public async Task<Store> Get(int id)
-        {
-            return  await unitOfWork.StoreRepository.GetDetailsById(id);
+            return Ok(storesVm);
         }
+
 
         // POST api/<StoreController>
         //create
         [HttpPost]
-        public async Task<StatusCodeResult> Post([FromBody] Store store)
+        public async Task<StatusCodeResult> Post([FromBody] StoreViewModel storeVm)
         {
             //check if the store sent is not null
-            if (store == null)
+            if (storeVm == null)
                 return BadRequest();
             //add the store to the invoices table
+            var store = Mapper.Map<StoreViewModel, Store>(storeVm);
             await unitOfWork.StoreRepository.Add(store);
             return Ok();
         }

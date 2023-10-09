@@ -5,8 +5,13 @@ using Microsoft.AspNetCore;
 using TechnicalTask.Models;
 using AutoMapper;
 using Newtonsoft.Json;
+using System.Net.Http.Headers;
+using System.Web;
+using Microsoft.AspNetCore.Authorization;
+
 namespace TechnicalTask.Controllers
 {
+    [Authorize]
     public class InvoiceController : Controller
     {
         private readonly HttpClient httpClient;
@@ -24,32 +29,59 @@ namespace TechnicalTask.Controllers
         // GET: InvoiceController
         public async Task<ActionResult> Index()
         {
-            HttpResponseMessage response = await httpClient.GetAsync("Api/Invoice");
-            if (response.IsSuccessStatusCode)
+            try
             {
-                var invoices = await response.Content.ReadAsAsync<List<InvoiceViewModel>>();
-                return View(invoices);
+
+                HttpResponseMessage response = await httpClient.GetAsync("Api/Invoice");
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var invoicesVm = await response.Content.ReadAsAsync<List<InvoiceViewModel>>();
+                    return View(invoicesVm);
+                }
+                return View();
             }
-            return View();
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
         
 
         // GET: InvoiceController/Details/5
-        public ActionResult Details(int id)
+        public async Task<ActionResult> Details(int id)
         {
-            return View();
+
+            try
+            {
+
+                HttpResponseMessage response = await httpClient.GetAsync($"Api/Invoice/{id}");
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var invoiceVm = await response.Content.ReadAsAsync<InvoiceViewModel>();
+                    return View(invoiceVm);
+                }
+                return View();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         // GET: InvoiceController/Create
         public async Task<ActionResult> Create()
         {
-            HttpResponseMessage response = await httpClient.GetAsync($"Api/Store");
-            HttpResponseMessage response1 = await httpClient.GetAsync($"Api/Item");
+            HttpResponseMessage storeResponse = await httpClient.GetAsync($"Api/Store");
+            HttpResponseMessage itemResponse = await httpClient.GetAsync($"Api/Item");
+            HttpResponseMessage unitRepsones = await httpClient.GetAsync($"Api/Unit");
 
-            if (response.IsSuccessStatusCode && response1.IsSuccessStatusCode)
+            if (storeResponse.IsSuccessStatusCode && itemResponse.IsSuccessStatusCode && unitRepsones.IsSuccessStatusCode)
             {
-                var stores = await response.Content.ReadAsAsync<List<Store>>();
-                var items = await response1.Content.ReadAsAsync<List<Item>>();
+                var stores = await storeResponse.Content.ReadAsAsync<List<StoreViewModel>>();
+                var items = await itemResponse.Content.ReadAsAsync<List<Item>>();
+                var units  = await unitRepsones.Content.ReadAsAsync<List<Unit>>();
                 var invoiceVm = new InvoiceViewModel
                 {
                     InvoiceItemsViewModel = new List<InvoiceItemViewModel>()
@@ -57,12 +89,17 @@ namespace TechnicalTask.Controllers
                 invoiceVm.Date = DateTime.Now;
                 ViewBag.Stores = stores;
                 ViewBag.Items = items;
+                ViewBag.Units = units;
                 return View(invoiceVm);
             }
-            var stores1 = await response.Content.ReadAsAsync<List<Store>>();
-            var items1 = await response1.Content.ReadAsAsync<List<Item>>();
+            var stores1 = await storeResponse.Content.ReadAsAsync<List<StoreViewModel>>();
+            var items1 = await itemResponse.Content.ReadAsAsync<List<Item>>();
+            var units1 = await unitRepsones.Content.ReadAsAsync<List<Unit>>();
+
             ViewBag.Stores = stores1;
             ViewBag.Items = items1;
+            ViewBag.Units = units1;
+
             return View();
 
         }
@@ -95,16 +132,19 @@ namespace TechnicalTask.Controllers
             {
                 // Handle the error case
 
-                HttpResponseMessage response1 = await httpClient.GetAsync($"Api/Store");
-                HttpResponseMessage response2 = await httpClient.GetAsync($"Api/Item");
+                HttpResponseMessage storeResponse = await httpClient.GetAsync($"Api/Store");
+                HttpResponseMessage itemResponse = await httpClient.GetAsync($"Api/Item");
+                HttpResponseMessage unitRepsones = await httpClient.GetAsync($"Api/Unit");
 
-                if (response1.IsSuccessStatusCode && response2.IsSuccessStatusCode)
+                if (storeResponse.IsSuccessStatusCode && itemResponse.IsSuccessStatusCode && unitRepsones.IsSuccessStatusCode)
                 {
-                    var stores = await response1.Content.ReadAsAsync<List<Store>>();
-                    var items = await response2.Content.ReadAsAsync<List<Item>>();
+                    var stores = await storeResponse.Content.ReadAsAsync<List<StoreViewModel>>();
+                    var items = await itemResponse.Content.ReadAsAsync<List<Item>>();
+                    var units = await unitRepsones.Content.ReadAsAsync<List<Unit>>();
 
                     ViewBag.Stores = stores;
                     ViewBag.Items = items;
+                    ViewBag.Units = units;
                     return View(invoiceVm);
                 }
                 return View("Error");

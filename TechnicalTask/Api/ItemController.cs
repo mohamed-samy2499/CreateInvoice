@@ -31,11 +31,14 @@ namespace TechnicalTask.Api
             return  await unitOfWork.ItemRepository.GetAll();
         }
         // GET api/<ItemController>/5
-        [HttpGet("{id}"),EnsureInvoiceExists]
+        [HttpGet("{id}")]
 
-        public async Task<Item> Get(int id)
+        public async Task<IActionResult> Get(int id)
         {
-            return  await unitOfWork.ItemRepository.GetById(id);
+            var invoice = await unitOfWork.ItemRepository.GetById(id);
+            if (invoice != null)
+                return  Ok(invoice);
+            return BadRequest();
         }
 
         // POST api/<ItemController>

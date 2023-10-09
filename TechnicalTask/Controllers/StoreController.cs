@@ -24,7 +24,7 @@ namespace TechnicalTask.Controllers
             HttpResponseMessage response = await httpClient.GetAsync("Api/Store");
             if (response.IsSuccessStatusCode)
             {
-                var stores = await response.Content.ReadAsAsync<List<Store>>();
+                var stores = await response.Content.ReadAsAsync<List<StoreViewModel>>();
                 return View(stores);
             }
             return View();

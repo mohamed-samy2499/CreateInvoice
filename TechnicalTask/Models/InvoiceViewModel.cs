@@ -10,7 +10,7 @@ namespace TechnicalTask.Models
         public decimal Total { get; set; }
         public decimal Taxes { get; set; }
         public decimal Net { get; set; }
-        public Store? Store { get; set; }
+        public StoreViewModel? Store { get; set; }
         public int StoreId { get; set; }
         public ICollection<InvoiceItemViewModel>? InvoiceItemsViewModel { get; set; } = new List<InvoiceItemViewModel>();
     }

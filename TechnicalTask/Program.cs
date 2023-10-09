@@ -13,14 +13,18 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(connectionString));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
-
-builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
-    .AddEntityFrameworkStores<AppDbContext>();
+builder.Services.AddMvc()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.PropertyNamingPolicy = null;
+    });
+//builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
+//    .AddEntityFrameworkStores<AppDbContext>();
 //registering the mvc
 builder.Services.AddControllersWithViews();
 //registering the api
 builder.Services.AddControllers();
-
+//registreing the Database Context
 builder.Services.AddDbContext<AppDbContext>(options =>
                options.UseSqlServer(connectionString)
            );
@@ -36,22 +40,25 @@ builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 //registering the automappers
 builder.Services.AddAutoMapper(M => M.AddProfile(new InvoiceProfile()));
 builder.Services.AddAutoMapper(M => M.AddProfile(new InvoiceItemProfile()));
-//builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-//                .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, options =>
-//                {
-//                    options.LoginPath = new PathString("/Account/Login");
-//                    options.AccessDeniedPath = new PathString("/Home/error");
-//                });
-//builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
-//{
-//    options.Password.RequireDigit = true;
-//    options.Password.RequireLowercase = true;
-//    options.Password.RequireNonAlphanumeric = true;
-//    options.Password.RequireUppercase = true;
-//    options.Password.RequiredLength = 4;
-//    options.SignIn.RequireConfirmedAccount = false;
-//}).AddEntityFrameworkStores<AppDbContext>()
-//  .AddTokenProvider<DataProtectorTokenProvider<IdentityUser>>(TokenOptions.DefaultProvider);
+builder.Services.AddAutoMapper(M => M.AddProfile(new StoreProfile()));
+//registering the Authentication
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+                .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, options =>
+                {
+                    options.LoginPath = new PathString("/Account/Login");
+                    options.AccessDeniedPath = new PathString("/Home/error");
+                });
+//registering roles for authorization
+builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
+{
+    options.Password.RequireDigit = true;
+    options.Password.RequireLowercase = true;
+    options.Password.RequireNonAlphanumeric = true;
+    options.Password.RequireUppercase = true;
+    options.Password.RequiredLength = 4;
+    options.SignIn.RequireConfirmedAccount = false;
+}).AddEntityFrameworkStores<AppDbContext>()
+  .AddTokenProvider<DataProtectorTokenProvider<IdentityUser>>(TokenOptions.DefaultProvider);
 
 var app = builder.Build();
 

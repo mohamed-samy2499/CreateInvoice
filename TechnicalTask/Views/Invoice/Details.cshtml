@@ -1,0 +1,85 @@
+﻿@model InvoiceViewModel
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h1>Invoice Details</h1>
+<br />
+<br />
+<form class="container">
+    <div class="row">
+        <div class=" col-md-6 text-center">
+            <label  class="form-control-label">Invoice No</label>
+            <input asp-for="InvoiceNo" class="form-control text-center" readonly/>
+        </div>
+        <div class=" col-md-6 text-center">
+            <label  class="form-control-label">Invoice Date </label>
+            <input asp-for="Date" class="form-control text-center" readonly/>
+        </div>
+        <div class=" col-md-6 text-center">
+            <label  class="form-control-label">Total </label>
+            <input asp-for="Total" class="form-control text-center" readonly/>
+        </div>
+        <div class=" col-md-6 text-center">
+            <label  class="form-control-label">Taxes </label>
+            <input asp-for="Taxes" class="form-control text-center" readonly/>
+        </div>
+        <div class=" col-md-6 text-center">
+            <label  class="form-control-label">Net </label>
+            <input asp-for="Net" class="form-control text-center" readonly/>
+        </div>
+        <div class=" col-md-6 text-center">
+            <label  class="form-control-label">Store </label>
+            <input asp-for="Store.Name" class="form-control text-center" readonly/>
+        </div>
+        
+    </div>
+    @if (Model.InvoiceItemsViewModel != null && Model.InvoiceItemsViewModel.Count() > 0)
+    {
+        <br />
+        <br />
+        <br />
+            <table class = "table table-striped table-hover text-center">
+                <thead>
+                    <tr class="text-center">
+                    <th class="text-center col-md-6">Item</th>
+                    <th class="text-center col-md-6">Unit</th>
+                    <th class="text-center col-md-6">Quantity</th>
+                    <th class="text-center col-md-6">Price</th>
+                    <th class="text-center col-md-6">Total</th>
+                    <th class="text-center col-md-6">Discount</th>
+                    <th class="text-center col-md-6">Net</th>
+                    </tr>
+                </thead>
+                <tbody>
+                @foreach (var item in Model.InvoiceItemsViewModel)
+                {
+                        <tr class="text-center">
+                            <td class="text-center col-md-6">@item.Item.Name</td>
+                            <td class="text-center col-md-6">@item.Unit</td>
+                            <td class="text-center col-md-6">@item.Quantity</td>
+                            <td class="text-center col-md-6">@item.Price</td>
+                            <td class="text-center col-md-6">@item.InvoiceItemTotal</td>
+                            <td class="text-center col-md-6">@item.Discount</td>
+                            <td class="text-center col-md-6">@item.InvoiceItemNet</td>
+
+                        </tr>
+                
+                }
+                </tbody>
+        </table>
+        <br />
+
+    }
+    else
+    {
+        <div class="alert alert-warning">
+        <h3 >No Data Found!</h3>
+    </div>
+    }
+    <div>
+        @*<a class="btn btn-success" asp-action="Edit" asp-controller="Invoice" asp-route-id="@Model.Id">Edit</a>*@
+        <a class="btn btn-light" asp-action="Index" asp-controller="Invoice">Back To List</a>
+    </div>
+</form>
+

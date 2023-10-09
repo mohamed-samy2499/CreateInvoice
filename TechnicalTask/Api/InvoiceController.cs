@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
 using TechnicalTask.Models;
+using Newtonsoft.Json;
+using Microsoft.AspNetCore.Authorization;
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace TechnicalTask.Api
@@ -26,21 +28,25 @@ namespace TechnicalTask.Api
         }
         // GET: api/<InvoiceController>
         [HttpGet]
-        public async Task<IEnumerable<InvoiceViewModel>> Get()
+        public async Task<IActionResult> Get()
         {
-            //get the invoices in the table
-            var invoices =  await unitOfWork.InvoiceRepository.GetAll();
-            //map the invoices to invoiceViewModel
-            var invoicesVm = new List<InvoiceViewModel>();
-            foreach(var invoice in invoices)
+            try
             {
-                invoicesVm.Add(Mapper.Map<Invoice,InvoiceViewModel>(invoice));
+
+                //get the invoices in the table
+                var invoices =  await unitOfWork.InvoiceRepository.GetAllWithIncludes();
+                //map the invoices to invoiceViewModel
+                var invoicesVm = Mapper.Map<IEnumerable<Invoice>, IEnumerable<InvoiceViewModel>>(invoices);
+                return Ok(invoicesVm);
             }
-            return invoicesVm;
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         // GET api/<InvoiceController>/5
-        [HttpGet("{id}"),EnsureInvoiceExists]
+        [HttpGet("{id}")]
 
         public async Task<Invoice> Get(int id)
         {
@@ -52,27 +58,36 @@ namespace TechnicalTask.Api
         [HttpPost]
         public async Task<StatusCodeResult> Post([FromBody] InvoiceViewModel invoiceVm)
         {
-            //check if the incoice view  model sent is not null
-            if (invoiceVm == null)
-                return BadRequest();
-            //check if the InvoiceItems are not null
-            if (invoiceVm.InvoiceItemsViewModel == null)
-                return BadRequest();
-            //map the view model to our invoice model
-            var invoice = Mapper.Map<Invoice>(invoiceVm);
-            //add the invoice to the invoices table
-            invoice.Store = await unitOfWork.StoreRepository.GetById(invoiceVm.StoreId);
-            await unitOfWork.InvoiceRepository.Add(invoice);
-            //loop through the invoiceitems associated with the invoice and add them to the invoiceitem table
-
-            foreach(var invoiceItemVm in invoiceVm.InvoiceItemsViewModel)
+            try
             {
-                invoiceItemVm.InvoiceViewModelId = invoice.Id;
-                invoiceItemVm.Item = await unitOfWork.ItemRepository.GetById(invoiceItemVm.ItemId);
-                var invoiceItem = Mapper.Map<InvoiceItemViewModel, InvoiceItem>(invoiceItemVm);
-                var res = await unitOfWork.InvoiceItemRepository.Add(invoiceItem);
+
+                //check if the incoice view  model sent is not null
+                if (invoiceVm == null)
+                    return BadRequest();
+                //check if the InvoiceItems are not null
+                if (invoiceVm.InvoiceItemsViewModel == null)
+                    return BadRequest();
+                //map the view model to our invoice model
+                var invoice = Mapper.Map<Invoice>(invoiceVm);
+                //add the invoice to the invoices table
+                invoice.Store = await unitOfWork.StoreRepository.GetById(invoiceVm.StoreId);
+                await unitOfWork.InvoiceRepository.Add(invoice);
+                //loop through the invoiceitems associated with the invoice and add them to the invoiceitem table
+
+                foreach(var invoiceItemVm in invoiceVm.InvoiceItemsViewModel)
+                {
+                    invoiceItemVm.InvoiceViewModelId = invoice.Id;
+                    invoiceItemVm.Item = await unitOfWork.ItemRepository.GetById(invoiceItemVm.ItemId);
+
+                    var invoiceItem = Mapper.Map<InvoiceItemViewModel, InvoiceItem>(invoiceItemVm);
+                    var res = await unitOfWork.InvoiceItemRepository.Add(invoiceItem);
+                }
+                return Ok();
             }
-            return Ok();
+            catch(Exception ex)
+            {
+                return BadRequest();
+            }
         }
         [HttpGet("AddInvoiceItemRow/{id}")]
         public  async Task<InvoiceItemViewModel?> AddInvoiceItemRow(int index)
@@ -84,12 +99,11 @@ namespace TechnicalTask.Api
                     Value = i.Id.ToString(),
                     Text = i.Name
                 }),
-                AvailableUnits = new List<SelectListItem>
+                AvailableUnits = unitOfWork.UnitRepository.GetAll().Result.Select(i => new SelectListItem
                 {
-                    new SelectListItem { Value = "1", Text = "us" },
-                    new SelectListItem { Value = "2", Text = "egp" },
-                    // Add more units as needed
-                }
+                    Value = i.Id.ToString(),
+                    Text = i.Name
+                })
             };
 
             return  viewModel;
