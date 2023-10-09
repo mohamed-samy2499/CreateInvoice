@@ -46,7 +46,7 @@ namespace TechnicalTask.Controllers
                 return BadRequest(ex.Message);
             }
         }
-        
+
 
         // GET: InvoiceController/Details/5
         public async Task<ActionResult> Details(int id)
@@ -81,7 +81,7 @@ namespace TechnicalTask.Controllers
             {
                 var stores = await storeResponse.Content.ReadAsAsync<List<StoreViewModel>>();
                 var items = await itemResponse.Content.ReadAsAsync<List<Item>>();
-                var units  = await unitRepsones.Content.ReadAsAsync<List<Unit>>();
+                var units = await unitRepsones.Content.ReadAsAsync<List<Unit>>();
                 var invoiceVm = new InvoiceViewModel
                 {
                     InvoiceItemsViewModel = new List<InvoiceItemViewModel>()
@@ -161,7 +161,7 @@ namespace TechnicalTask.Controllers
 
                 return PartialView("_InvoiceItem", viewModel);
             }
-                return View();
+            return View();
         }
         // GET: InvoiceController/Edit/5
         public ActionResult Edit(int id)
@@ -183,25 +183,43 @@ namespace TechnicalTask.Controllers
                 return View();
             }
         }
-
-        // GET: InvoiceController/Delete/5
-        public ActionResult Delete(int id)
+        [HttpGet]
+        [Route("Invoice/Delete/{id}")]
+        public async Task<IActionResult> Delete(int id)
         {
-            return View();
+            if (id == null)
+                return NotFound();
+            HttpResponseMessage response = await httpClient.GetAsync($"Api/Invoice/{id}");
+            if (response.IsSuccessStatusCode)
+            {
+                var invoice = await response.Content.ReadAsAsync<Invoice>();
+                var invoiceVm = mapper.Map<Invoice, InvoiceViewModel>(invoice);
+                return View(invoiceVm);
+            }
+            return RedirectToAction(nameof(Index));
         }
 
         // POST: InvoiceController/Delete/5
-        [HttpPost]
+        [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
+        public async Task<ActionResult> DeleteConfirmed(int id, InvoiceViewModel invoiceVm)
         {
             try
             {
+                HttpResponseMessage response = await httpClient.DeleteAsync($"Api/Invoice/Remove/{id}");
+
+                if (response.IsSuccessStatusCode)
+                {
+
+                    return RedirectToAction(nameof(Index));
+                }
+                TempData["ErrorMessage"] = $"Failed to delete the invoice. {response.ToString()}";
                 return RedirectToAction(nameof(Index));
             }
             catch
             {
-                return View();
+                TempData["ErrorMessage"] = "An error occurred while deleting the invoice.";
+                return RedirectToAction(nameof(Index));
             }
         }
     }

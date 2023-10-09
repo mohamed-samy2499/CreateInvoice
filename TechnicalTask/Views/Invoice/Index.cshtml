@@ -3,6 +3,7 @@
 @{
     ViewData["Title"] = "Index";
 }
+<p>@TempData["ErrorMessage"]</p>
 <h1>Invoices</h1>
 
 <br />
@@ -31,6 +32,7 @@
             @foreach (var item in Model)
            {
                 <tr>
+                    @Html.Hidden("id", item.Id)
                     <td>@item.InvoiceNo</td>
                     <td>@item.Date.</td>
                     <td>@item.Total.</td>

@@ -104,6 +104,7 @@ namespace TechnicalTask.Controllers
         // GET: ItemController/Delete/5
         public ActionResult Delete(int id)
         {
+
             return View();
         }
 

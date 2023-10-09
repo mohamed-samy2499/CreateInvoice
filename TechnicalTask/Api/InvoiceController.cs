@@ -50,7 +50,7 @@ namespace TechnicalTask.Api
 
         public async Task<Invoice> Get(int id)
         {
-            return  await unitOfWork.InvoiceRepository.GetDetailsById(id);
+            return  await unitOfWork.InvoiceRepository.GetById(id);
         }
 
         // POST api/<InvoiceController>
@@ -67,6 +67,11 @@ namespace TechnicalTask.Api
                 //check if the InvoiceItems are not null
                 if (invoiceVm.InvoiceItemsViewModel == null)
                     return BadRequest();
+                if (!CheckCalculations(invoiceVm))
+                {
+                    ModelState.AddModelError("", "Total and Net values do not match the calculations.");
+                    return BadRequest();
+                }
                 //map the view model to our invoice model
                 var invoice = Mapper.Map<Invoice>(invoiceVm);
                 //add the invoice to the invoices table
@@ -89,6 +94,8 @@ namespace TechnicalTask.Api
                 return BadRequest();
             }
         }
+
+
         [HttpGet("AddInvoiceItemRow/{index}")]
         public  async Task<InvoiceItemViewModel?> AddInvoiceItemRow(int index)
             {
@@ -116,9 +123,48 @@ namespace TechnicalTask.Api
         }
 
         // DELETE api/<InvoiceController>/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
+        #region Delete
+        [HttpDelete("Remove/{id}")]
+        public async Task<IActionResult> Remove(int id)
         {
+            try
+            {
+                // Check if the invoice with the given ID exists
+                var invoice = await unitOfWork.InvoiceRepository.GetById(id);
+
+                if (invoice == null)
+                {
+                    return NotFound(); // Return a 404 Not Found response if the invoice doesn't exist
+                }
+
+                // Delete the invoice
+                await unitOfWork.InvoiceRepository.Delete(invoice);
+
+                return NoContent(); // Return a 204 No Content response on successful deletion
+            }
+            catch (Exception ex)
+            {
+                // Handle other exceptions and return an error response
+                return StatusCode(500, "An error occurred while deleting the invoice.");
+            }
+        }
+        #endregion
+        private bool CheckCalculations(InvoiceViewModel invoiceVm)
+        {
+            decimal serverSideNet = 0;
+
+            foreach (var item in invoiceVm.InvoiceItemsViewModel)
+            {
+                // Perform calculations similar to client-side
+                decimal itemTotal = item.Quantity * item.Price;
+                decimal itemNet = itemTotal - (itemTotal * (item.Discount / 100));
+
+                serverSideNet += itemNet;
+            }
+            serverSideNet = (serverSideNet + (serverSideNet * (invoiceVm.Taxes / 100)));
+            if ( serverSideNet != invoiceVm.Net)
+                return false;
+            return true;
         }
     }
 }
