@@ -90,20 +90,26 @@
                 var total = 0;
                 $('#invoiceTable tbody tr').each(function () {
                     var row = $(this);
-                    var net = parseFloat(row.find('[id^=InvoiceItemNet]').val()) || 0;
+                    var net = parseFloat(row.find('[id^=InvoiceItemsViewModelInvoiceItemNet]').val()) || 0;
                     total += net;
+                    console.log(net);
                 });
-                $('#TotalAmount').text(total.toFixed(2));
+                $('#TotalAmount').val(total.toFixed(2));
+                calculateNet();
             }
+            // Event delegation to listen for changes on .invoice-item-total fields
+            $('#invoiceTable tbody').on('change', '.invoice-item-total', function () {
+                updateTotal();
+            });
             // Function to calculate Net after applying taxes
             function calculateNet() {
-                var total = parseFloat($('#TotalAmount').text()) || 0;
+                var total = parseFloat($('#TotalAmount').val()) || 0;
                 var taxes = parseFloat($('#TotalTaxesPercentage').val()) || 0;
                 var net = total + (total * (taxes / 100));
                 $('#Net').val(net.toFixed(2));
             }
             // Attach event handler to the Taxes field
-            $('#TotalTaxesPercentage , #TotalAmount').on('change', function () {
+            $('#TotalTaxesPercentage').on('change', function () {
                 calculateNet();
             });
             // Add a row to the table
@@ -157,7 +163,6 @@
                 // Set the InvoiceItemsViewModel property with the array
                 var invoiceItemsJson = JSON.stringify(invoiceItemsArray);
                 $('#InvoiceItemsViewModel').val(invoiceItemsJson);
-                console.log(invoiceItemsJson)
             });
             $(document).on('click', '.removeRowButton', function() {
                 $(this).closest('tr').remove();

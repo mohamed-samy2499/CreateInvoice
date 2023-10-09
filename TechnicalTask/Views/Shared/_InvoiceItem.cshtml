@@ -22,7 +22,7 @@
     </td>
     <td>
         <div class="form-group">
-            <input type="number" class="form-control" asp-for="Quantity"
+            <input type="number" class="form-control invoice-item-total" asp-for="Quantity"
             id = "InvoiceItemsViewModelQuantity@(Model.Sequence)" />
             <span asp-validation-for="Quantity" class="text-danger"></span>
         </div>
@@ -30,7 +30,7 @@
     <td>
         <div class="form-group">
             <input type="number" class="form-control" asp-for="Price"
-            id = "InvoiceItemsViewModelPrice@(Model.Sequence)"  />
+            id = "InvoiceItemsViewModelPrice@(Model.Sequence)" readonly />
             <span asp-validation-for="Price" class="text-danger"></span>
         </div>
     </td>
@@ -43,14 +43,14 @@
     </td>
     <td>
         <div class="form-group">
-            <input type="number" class="form-control" asp-for="Discount"
+            <input type="number" class="form-control invoice-item-total" asp-for="Discount"
             id = "InvoiceItemsViewModelDiscount@(Model.Sequence)" />
             <span asp-validation-for="Discount" class="text-danger"></span>
         </div>
     </td>
     <td>
         <div class="form-group">
-            <input type="number" class="form-control" asp-for="InvoiceItemNet"
+            <input type="number" class="form-control " asp-for="InvoiceItemNet"
             id = "InvoiceItemsViewModelInvoiceItemNet@(Model.Sequence)"  readonly />
             <span asp-validation-for="InvoiceItemNet" class="text-danger"></span>
         </div>
@@ -112,7 +112,6 @@
                     Id: result.Id,
                     Price: result.Price
             };
-            console.log(result);
             row.find('[id^=InvoiceItemsViewModelPrice]').val(itemInfo.Price);
             calculateInvoiceItemTotal(row);
             calculateInvoiceItemNet(row);
