@@ -10,23 +10,35 @@
 <br />
 <br />
 <form asp-action="Create" asp-controller="Invoice" enctype="multipart/form-data">
-    <div class="form-group">
-        <label class="col-form-label" asp-for="InvoiceNo"></label>
-        <input type="number" class="form-control" asp-for="InvoiceNo" />
-        <span asp-validation-for="InvoiceNo" class="text-danger"></span>
-    </div>
-    <div class="form-group">
-            <label class="col-form-label" asp-for="StoreId"></label>
-            <select asp-for="StoreId" asp-items="Stores" class="form-control">
+    <div class="row">
+        <div class="col-md-3">
+            <div class="form-group">
+                <label class="col-form-label" asp-for="InvoiceNo"></label>
+                <input type="number" class="form-control" asp-for="InvoiceNo" />
+                <span asp-validation-for="InvoiceNo" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="col-md-3 offset-md-2 offset-md-right-2">
+            <div class="form-group">
+                <label class="col-form-label" asp-for="StoreId">Store</label>
+                <select asp-for="StoreId" asp-items="Stores" class="form-control">
                 <option>Choose a Store...</option>
-            </select>
+                </select>
 
-            <span asp-validation-for="StoreId" class="text-danger"></span>
+                <span asp-validation-for="StoreId" class="text-danger"></span>
+            </div>
+        </div>
+        
+        
     </div>
-    <div class="form-group">
-        <label class="col-form-label" asp-for="Date"></label>
-        <input type="date" class="form-control" asp-for="Date" />
-        <span asp-validation-for="Date" class="text-danger"></span>
+    <div class="row">
+        <div class="col-md-3">
+            <div class="form-group">
+                <label class="col-form-label" asp-for="Date"></label>
+                <input type="date" class="form-control" asp-for="Date" />
+                <span asp-validation-for="Date" class="text-danger"></span>
+            </div>
+        </div>
     </div>
     @*here will be the invoiceitems dynamic table*@
     <br />
@@ -58,24 +70,43 @@
     <br />
     <br />
 @*end of dynamic table*@
-<input type="hidden" id="InvoiceItemsViewModel" name="InvoiceItemsViewModel[]" />
-    <div class="form-group">
-        <label class="col-form-label" asp-for="Total"></label>
-        <input type="number" class="form-control" asp-for="Total" readonly id = "TotalAmount"/>
-        <span asp-validation-for="Total" class="text-danger"></span>
-    </div>
-    <div class="form-group">
-        <label class="col-form-label" asp-for="Taxes"></label>
-        <input type="number" min="1" max="100" id="TotalTaxesPercentage" class="form-control" asp-for="Taxes" />
-        <span asp-validation-for="Taxes" class="text-danger"></span>
-    </div>
-    <div class="form-group">
-        <label class="col-form-label" asp-for="Net"></label>
-        <input type="number" class="form-control" asp-for="Net" readonly id = "Net"/>
-        <span asp-validation-for="Net" class="text-danger"></span>
-    </div>
-     <button type="submit" class="btn btn-success">Save Invoice</button>
-    <a asp-action="Index" class="btn btn-light">Cancel</a>
+    <input type="hidden" id="InvoiceItemsViewModel" name="InvoiceItemsViewModel[]" />
+    <div class="row">
+            <div class="col-md-2 ">
+                <div class="form-group">
+                    <label class="col-form-label" asp-for="Total"></label>
+                    <input type="number" class="form-control" asp-for="Total" readonly id = "TotalAmount"/>
+                    <span asp-validation-for="Total" class="text-danger"></span>
+                </div>
+            </div>
+      </div>
+      <div class="row">
+            <div class="col-md-2">
+                <div class="form-group">
+                    <label class="col-form-label" asp-for="Taxes"></label>
+                    <input type="number" min="1" max="100" id="TotalTaxesPercentage" class="form-control" asp-for="Taxes" />
+                    <span asp-validation-for="Taxes" class="text-danger"></span>
+                </div>
+            </div>
+      </div>
+      <div class="row">
+            <div class="col-md-2">
+                <div class="form-group">
+                    <label class="col-form-label" asp-for="Net"></label>
+                    <input type="number" class="form-control" asp-for="Net" readonly id = "Net"/>
+                    <span asp-validation-for="Net" class="text-danger"></span>
+                </div>
+            </div>
+      </div>
+      <div class="row">
+            <div class="col-md-2 offset-md-4">
+                 <button type="submit" class="btn btn-success">Save Invoice</button>
+            </div>
+            <div class="col-md-2 offset-md-right-4">
+
+                 <a asp-action="Index" class="btn btn-danger">Cancel</a>
+            </div>
+      </div>
 </form>
 
 @section Scripts {
