@@ -61,7 +61,7 @@
 <input type="hidden" id="InvoiceItemsViewModel" name="InvoiceItemsViewModel[]" />
     <div class="form-group">
         <label class="col-form-label" asp-for="Total"></label>
-        <input type="number" class="form-control" asp-for="Total" />
+        <input type="number" class="form-control" asp-for="Total" readonly id = "TotalAmount"/>
         <span asp-validation-for="Total" class="text-danger"></span>
     </div>
     <div class="form-group">
@@ -71,7 +71,7 @@
     </div>
     <div class="form-group">
         <label class="col-form-label" asp-for="Net"></label>
-        <input type="number" class="form-control" asp-for="Net" />
+        <input type="number" class="form-control" asp-for="Net" readonly id = "Net"/>
         <span asp-validation-for="Net" class="text-danger"></span>
     </div>
      <button type="submit" class="btn btn-success">Save Invoice</button>
@@ -85,6 +85,27 @@
             // Initialize the dynamic table
             var rowIndex = @Model.InvoiceItemsViewModel.Count;
             var invoiceItemsArray = [];
+            // Function to update and display the total
+            function updateTotal() {
+                var total = 0;
+                $('#invoiceTable tbody tr').each(function () {
+                    var row = $(this);
+                    var net = parseFloat(row.find('[id^=InvoiceItemNet]').val()) || 0;
+                    total += net;
+                });
+                $('#TotalAmount').text(total.toFixed(2));
+            }
+            // Function to calculate Net after applying taxes
+            function calculateNet() {
+                var total = parseFloat($('#TotalAmount').text()) || 0;
+                var taxes = parseFloat($('#TotalTaxesPercentage').val()) || 0;
+                var net = total + (total * (taxes / 100));
+                $('#Net').val(net.toFixed(2));
+            }
+            // Attach event handler to the Taxes field
+            $('#TotalTaxesPercentage , #TotalAmount').on('change', function () {
+                calculateNet();
+            });
             // Add a row to the table
             function addRow() {
                 $.ajax({
@@ -94,16 +115,17 @@
                     success: function (result) {
                         $('#invoiceTable tbody').append(result);
                         var newItem = {
-                        ItemId: null,
-                        Unit: null,
-                        Quantity: null,
-                        Price: null,
-                        Discount:null,
-                        InvoiceItemTotal: null,
-                        InvoiceItemNet: null
-                    };
-                    invoiceItemsArray.push(newItem);
+                            ItemId: null,
+                            Unit: null,
+                            Quantity: null,
+                            Price: null,
+                            Discount:null,
+                            InvoiceItemTotal: null,
+                            InvoiceItemNet: null
+                        };
+                        invoiceItemsArray.push(newItem);
                         rowIndex++;
+                        updateTotal(); // Update the total when adding a row
                     },
                     error: function (xhr, status, error) {
                         console.log(error);
@@ -120,38 +142,33 @@
 
                 // Iterate through the rows and populate the invoiceItemsArray
                 $('#invoiceTable tbody tr').each(function () {
-                var row = $(this);
-                var newItem = {
-                    ItemId: row.find('select[name$="ItemId"]').val(),
-                    Unit: row.find('select[name$="Unit"]').val(),
-                    Quantity: row.find('input[name$="Quantity"]').val(),
-                    Price: row.find('input[name$="Price"]').val(),
-                    Discount: row.find('input[name$="Discount"]').val(),
-                    InvoiceItemTotal: row.find('input[name$="InvoiceItemTotal"]').val(),
-                    InvoiceItemNet: row.find('input[name$="InvoiceItemNet"]').val()
-                };
-
-                invoiceItemsArray.push(newItem);
-
+                    var row = $(this);
+                    var newItem = {
+                        ItemId: row.find('select[name$="ItemId"]').val(),
+                        Unit: row.find('select[name$="Unit"]').val(),
+                        Quantity: row.find('input[name$="Quantity"]').val(),
+                        Price: row.find('input[name$="Price"]').val(),
+                        Discount: row.find('input[name$="Discount"]').val(),
+                        InvoiceItemTotal: row.find('input[name$="InvoiceItemTotal"]').val(),
+                        InvoiceItemNet: row.find('input[name$="InvoiceItemNet"]').val()
+                    };
+                    invoiceItemsArray.push(newItem);
                 });
-                 // Set the InvoiceItemsViewModel property with the array
-    var invoiceItemsJson = JSON.stringify(invoiceItemsArray);
-    $('#InvoiceItemsViewModel').val(invoiceItemsJson);
-    console.log(invoiceItemsJson)
-        });
-        $(document).on('click', '.removeRowButton', function() {
-            $(this).closest('tr').remove();
-        });
+                // Set the InvoiceItemsViewModel property with the array
+                var invoiceItemsJson = JSON.stringify(invoiceItemsArray);
+                $('#InvoiceItemsViewModel').val(invoiceItemsJson);
+                console.log(invoiceItemsJson)
+            });
+            $(document).on('click', '.removeRowButton', function() {
+                $(this).closest('tr').remove();
+                updateTotal(); // Update the total when removing a row
+            });
+            updateTotal();
+            calculateNet();
         });
 
 
-        //// Function to calculate the net value
-        //function calculateNet(discount, unit, price) {
-        //    // Perform your calculation here
-        //    // For example:
-        //    var net =  price * (discount/100);
-        //    return net;
-        //}
+       
     </script>
 }
 

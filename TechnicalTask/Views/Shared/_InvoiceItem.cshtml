@@ -1,71 +1,64 @@
 ﻿@model InvoiceItemViewModel 
-                <tr>
-                    <td>
-                        <div class="form-group">
-                            @*<label class="col-form-label" asp-for="ItemId"></label>*@
-                            <select asp-for="ItemId" asp-items="@Model.AvailableItems"
-                            class="form-control" id = "itemSelected@(Model.Sequence)">
-                            <option>Choose an Item...</option>
-                            </select>
+<tr>
+    <td>
+        <div class="form-group">
+            <select asp-for="ItemId" asp-items="@Model.AvailableItems"
+            class="form-control" id = "itemSelected@(Model.Sequence)">
+            <option>Choose an Item...</option>
+            </select>
 
-                            <span asp-validation-for="ItemId" class="text-danger"></span>
-                        </div>
-                    </td>
-                    <td>
-                    <div class="form-group">
-                    @*<label class="col-form-label" asp-for="Unit"></label>*@
-                    <select asp-for="Unit" asp-items="@Model.AvailableUnits" class="form-control"
-                    id = "InvoiceItemsViewModelUnit@(Model.Sequence)" >
-                    <option>Choose a Unit...</option>
-                    </select>
+            <span asp-validation-for="ItemId" class="text-danger"></span>
+        </div>
+    </td>
+    <td>
+        <div class="form-group">
+            <select asp-for="Unit" asp-items="@Model.AvailableUnits" class="form-control"
+            id = "InvoiceItemsViewModelUnit@(Model.Sequence)" >
+            <option>Choose a Unit...</option>
+            </select>
 
-                    <span asp-validation-for="Unit" class="text-danger"></span>
-                    </div>
-                    </td>
-                    <td>
-                    <div class="form-group">
-                    @*<label class="col-form-label" asp-for="Quantity"></label>*@
-                    <input type="number" class="form-control" asp-for="Quantity"
-                    id = "InvoiceItemsViewModelQuantity@(Model.Sequence)" />
-                    <span asp-validation-for="Quantity" class="text-danger"></span>
-                    </div
-                    </td>
-                    <td>
-                    <div class="form-group">
-                    @*<label class="col-form-label" asp-for="Price"></label>*@
-                    <input type="number" class="form-control" asp-for="Price"
-                    id = "InvoiceItemsViewModelPrice@(Model.Sequence)"  />
-                    <span asp-validation-for="Price" class="text-danger"></span>
-                    </div>
-                    </td>
-                    <td>
-                    <div class="form-group">
-                    @*<label class="col-form-label" asp-for="InvoiceItemTotal"></label>*@
-                    <input type="number" class="form-control" asp-for="InvoiceItemTotal"
-                    id = "InvoiceItemsViewModelInvoiceItemTotal@(Model.Sequence)" readonly />
-                    <span asp-validation-for="InvoiceItemTotal" class="text-danger"></span>
-                    </div>
-                    </td>
-                    <td>
-                    <div class="form-group">
-                    @*<label class="col-form-label" asp-for="Discount"></label>*@
-                    <input type="number" class="form-control" asp-for="Discount"
-                    id = "InvoiceItemsViewModelDiscount@(Model.Sequence)" />
-                    <span asp-validation-for="Discount" class="text-danger"></span>
-                    </div>
-                    </td>
-                    <td>
-                    <div class="form-group">
-                    @*<label class="col-form-label" asp-for="InvoiceItemNet"></label>*@
-                    <input type="number" class="form-control" asp-for="InvoiceItemNet"
-                    id = "InvoiceItemsViewModelInvoiceItemNet@(Model.Sequence)"  readonly />
-                    <span asp-validation-for="InvoiceItemNet" class="text-danger"></span>
-                    </div>
-                    </td>
-                        <td>
+            <span asp-validation-for="Unit" class="text-danger"></span>
+        </div>
+    </td>
+    <td>
+        <div class="form-group">
+            <input type="number" class="form-control" asp-for="Quantity"
+            id = "InvoiceItemsViewModelQuantity@(Model.Sequence)" />
+            <span asp-validation-for="Quantity" class="text-danger"></span>
+        </div>
+    </td>
+    <td>
+        <div class="form-group">
+            <input type="number" class="form-control" asp-for="Price"
+            id = "InvoiceItemsViewModelPrice@(Model.Sequence)"  />
+            <span asp-validation-for="Price" class="text-danger"></span>
+        </div>
+    </td>
+    <td>
+        <div class="form-group">
+            <input type="number" class="form-control" asp-for="InvoiceItemTotal"
+            id = "InvoiceItemsViewModelInvoiceItemTotal@(Model.Sequence)" readonly />
+            <span asp-validation-for="InvoiceItemTotal" class="text-danger"></span>
+        </div>
+    </td>
+    <td>
+        <div class="form-group">
+            <input type="number" class="form-control" asp-for="Discount"
+            id = "InvoiceItemsViewModelDiscount@(Model.Sequence)" />
+            <span asp-validation-for="Discount" class="text-danger"></span>
+        </div>
+    </td>
+    <td>
+        <div class="form-group">
+            <input type="number" class="form-control" asp-for="InvoiceItemNet"
+            id = "InvoiceItemsViewModelInvoiceItemNet@(Model.Sequence)"  readonly />
+            <span asp-validation-for="InvoiceItemNet" class="text-danger"></span>
+        </div>
+    </td>
+    <td>
         <button type="button" class="btn btn-danger removeRowButton">Remove</button>
     </td>
-                </tr>
+</tr>
 
 
 
@@ -73,16 +66,16 @@
 
 
 
-                <script>
+<script>
     $(document).ready(function () {
         // Calculate InvoiceItemTotal and InvoiceItemNet when Quantity or Discount change
         $('[id^=InvoiceItemsViewModelDiscount]').on('change', function () {
-             var row = $(this).closest('tr');
+            var row = $(this).closest('tr');
             calculateInvoiceItemTotal(row);
             calculateInvoiceItemNet(row);
         });
-         $('[id^=InvoiceItemsViewModelQuantity]').on('change', function () {
-             var row = $(this).closest('tr');
+        $('[id^=InvoiceItemsViewModelQuantity]').on('change', function () {
+            var row = $(this).closest('tr');
             calculateInvoiceItemTotal(row);
             calculateInvoiceItemNet(row);
         });
@@ -96,7 +89,7 @@
             var quantity = parseFloat(row.find('[id^=InvoiceItemsViewModelQuantity]').val());
             var price = parseFloat(row.find('[id^=InvoiceItemsViewModelPrice]').val());
             var total = quantity * price;
-           row.find('[id^=InvoiceItemsViewModelInvoiceItemTotal]').val(total.toFixed(2));
+            row.find('[id^=InvoiceItemsViewModelInvoiceItemTotal]').val(total.toFixed(2));
         }
 
         // Function to calculate InvoiceItemNet
@@ -107,26 +100,26 @@
             row.find('[id^=InvoiceItemsViewModelInvoiceItemNet]').val(net.toFixed(2));
         }
         ////
-         // Function to get item info and trigger calculations
+        // Function to get item info and trigger calculations
         function getItemInfo(row) {
             var selectedItem = row.find('[id^=itemSelected]').val();
             $.ajax({
-                url: '@Url.Action("GetOne","Item")',
-                type: 'GET',
-                data: { Id: selectedItem },
-                success: function (result) {
-                    var itemInfo = {
-                        Id: result.Id,
-                        Price: result.Price
-                    };
-                    console.log(result);
-                    row.find('[id^=InvoiceItemsViewModelPrice]').val(itemInfo.Price);
-                    calculateInvoiceItemTotal(row);
-                    calculateInvoiceItemNet(row);
-                },
-                error: function (xhr, status, error) {
-                    console.log("error happened");
-                }
+            url: '@Url.Action("GetOne","Item")',
+            type: 'GET',
+            data: { Id: selectedItem },
+            success: function (result) {
+                var itemInfo = {
+                    Id: result.Id,
+                    Price: result.Price
+            };
+            console.log(result);
+            row.find('[id^=InvoiceItemsViewModelPrice]').val(itemInfo.Price);
+            calculateInvoiceItemTotal(row);
+            calculateInvoiceItemNet(row);
+            },
+            error: function (xhr, status, error) {
+                console.log("error happened");
+            }
             });
         }
 
@@ -135,29 +128,5 @@
             var row = $(this).closest('tr');
             getItemInfo(row);
         });
-        //get the item selected price
-            //$('#itemSelected').change(function () {
-            //var selectedItem = $(this).val();
-            //    $.ajax({
-            //        url: '@Url.Action( "GetOne","Item")',
-            //        type: 'GET',
-            //        data: { Id: selectedItem },
-            //        success: function (result) {
-            //            itemInfo = {
-            //               Id: result.Id,
-            //               Price: result.Price
-            //                };
-            //           $('#InvoiceItemsViewModelPrice').val(itemInfo.Price);
-            //           console.log(result);
-            //        },
-            //        error: function (xhr, status, error) {
-            //            console.log("error happened");
-            //        }
-            //    });
-            //});
-           
-        // Call the calculation functions on page load
-        //calculateInvoiceItemTotal();
-        //calculateInvoiceItemNet();
     });
 </script>
