@@ -1,4 +1,4 @@
-﻿@model InvoiceViewModel
+﻿@model Invoice
 @{
     ViewData["Title"] = "Details";
 }
@@ -34,7 +34,7 @@
         </div>
         
     </div>
-    @if (Model.InvoiceItemsViewModel != null && Model.InvoiceItemsViewModel.Count() > 0)
+    @if (Model.InvoiceItems != null && Model.InvoiceItems.Count() > 0)
     {
         <br />
         <br />
@@ -52,16 +52,16 @@
                     </tr>
                 </thead>
                 <tbody>
-                @foreach (var item in Model.InvoiceItemsViewModel)
+                @foreach (var item in Model.InvoiceItems)
                 {
                         <tr class="text-center">
                             <td class="text-center col-md-6">@item.Item.Name</td>
                             <td class="text-center col-md-6">@item.Unit</td>
                             <td class="text-center col-md-6">@item.Quantity</td>
                             <td class="text-center col-md-6">@item.Price</td>
-                            <td class="text-center col-md-6">@item.InvoiceItemTotal</td>
+                            <td class="text-center col-md-6">@item.Total</td>
                             <td class="text-center col-md-6">@item.Discount</td>
-                            <td class="text-center col-md-6">@item.InvoiceItemNet</td>
+                            <td class="text-center col-md-6">@item.Net</td>
 
                         </tr>
                 

@@ -18,6 +18,14 @@ namespace BusinessLogicLayer.Repositories
             return await context.Set<Invoice>()
                 .Include(i => i.Store).ToListAsync();
         }
+        public async Task<Invoice> GetByIdWithItemsInclude(int id)
+        {
+            var invoice = await context.Set<Invoice>()
+                                .Where(i => i.Id == id)
+                                .Include(i => i.InvoiceItems)
+                                .FirstOrDefaultAsync();
+            return invoice;
+        }
 
         public async Task<Invoice> GetDetailsById(int id)
         {

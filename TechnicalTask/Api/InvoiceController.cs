@@ -52,7 +52,22 @@ namespace TechnicalTask.Api
         {
             return  await unitOfWork.InvoiceRepository.GetById(id);
         }
+        //[HttpGet("GetDetails/{id}")]
 
+        //public async Task<IActionResult> GetDetails(int id)
+        //{
+        //    try
+        //    {
+
+        //        var details = await unitOfWork.InvoiceRepository.GetDetailsById(id);
+        //        return Ok(details);
+        //    }
+        //    catch(Exception ex)
+        //    {
+        //        var msg = ex.Message;
+        //        return BadRequest(msg);
+        //    }
+        //}
         // POST api/<InvoiceController>
         //create
         [HttpPost]

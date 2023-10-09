@@ -51,23 +51,28 @@ namespace TechnicalTask.Controllers
         // GET: InvoiceController/Details/5
         public async Task<ActionResult> Details(int id)
         {
+            return RedirectToAction(nameof(Index));
+            //try
+            //{
 
-            try
-            {
+            //    HttpResponseMessage response = await httpClient.GetAsync($"Api/Invoice/GetDetails/{id}");
 
-                HttpResponseMessage response = await httpClient.GetAsync($"Api/Invoice/{id}");
-
-                if (response.IsSuccessStatusCode)
-                {
-                    var invoiceVm = await response.Content.ReadAsAsync<InvoiceViewModel>();
-                    return View(invoiceVm);
-                }
-                return View();
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
+            //    if (response.IsSuccessStatusCode)
+            //    {
+            //        var invoice  = await response.Content.ReadAsAsync<Invoice>();
+            //        //foreach(var item in invoice.InvoiceItems)
+            //        //{
+            //        //    InvoiceViewModel viewModel = new InvoiceViewModel();
+            //        //}
+            //        //var invoiceVm = mapper.Map<Invoice,InvoiceViewModel>(invoice);
+            //        return View(invoice);
+            //    }
+            //    return View();
+            //}
+            //catch (Exception ex)
+            //{
+            //    return BadRequest(ex.Message);
+            //}
         }
 
         // GET: InvoiceController/Create
