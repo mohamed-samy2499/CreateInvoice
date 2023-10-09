@@ -29,6 +29,9 @@
         <span asp-validation-for="Date" class="text-danger"></span>
     </div>
     @*here will be the invoiceitems dynamic table*@
+    <br />
+    <br />
+    <br />
    <table id="invoiceTable" class="table">
         <thead>
             <tr>
@@ -45,12 +48,15 @@
             @{ var i = 0; }
             @foreach (var item in Model.InvoiceItemsViewModel)
             {
+                
                 @Html.PartialAsync("_InvoiceItem",item);
             }
         </tbody>
     </table>
     
     <button type="button" id="addRowButton" class="btn btn-primary">Add Item</button>
+    <br />
+    <br />
 @*end of dynamic table*@
 <input type="hidden" id="InvoiceItemsViewModel" name="InvoiceItemsViewModel[]" />
     <div class="form-group">

@@ -14,6 +14,8 @@ namespace TechnicalTask.Models
         public decimal InvoiceItemNet { get; set; }
         public int InvoiceViewModelId { get; set; }
         public InvoiceViewModel? InvoiceViewModel { get; set; }
+        // the sequence of invoiceItems within one invoice 
+        public int Sequence { get; set; }
         public int ItemId { get; set; }
         public Item? Item { get; set; }
         public IEnumerable<SelectListItem>? AvailableItems { get; set; } = new List<SelectListItem>();

@@ -35,9 +35,9 @@ namespace TechnicalTask.Api
 
         public async Task<IActionResult> Get(int id)
         {
-            var invoice = await unitOfWork.ItemRepository.GetById(id);
-            if (invoice != null)
-                return  Ok(invoice);
+            var item = await unitOfWork.ItemRepository.GetById(id);
+            if (item != null)
+                return  Ok(item);
             return BadRequest();
         }
 

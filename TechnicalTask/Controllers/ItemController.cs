@@ -37,12 +37,23 @@ namespace TechnicalTask.Controllers
             HttpResponseMessage response = await httpClient.GetAsync($"Api/Item/{id}");
             if (response.IsSuccessStatusCode)
             {
-                var Items = await response.Content.ReadAsAsync<List<Item>>();
-                return View(Items);
+                var Item = await response.Content.ReadAsAsync<Item>();
+                return View(Item);
             }
             return View();
         }
-
+        // GET: ItemController/Details/5
+        public async Task<Item> GetOne(int id)
+        {
+            HttpResponseMessage response = await httpClient.GetAsync($"Api/Item/{id}");
+            var Item = new Item();
+            if (response.IsSuccessStatusCode)
+            {
+                Item = await response.Content.ReadAsAsync<Item>();
+                return Item;
+            }
+            return Item;
+        }
         // GET: ItemController/Create
         public ActionResult Create()
         {

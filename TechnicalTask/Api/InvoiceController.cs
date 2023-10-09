@@ -89,11 +89,12 @@ namespace TechnicalTask.Api
                 return BadRequest();
             }
         }
-        [HttpGet("AddInvoiceItemRow/{id}")]
+        [HttpGet("AddInvoiceItemRow/{index}")]
         public  async Task<InvoiceItemViewModel?> AddInvoiceItemRow(int index)
             {
             var viewModel = new InvoiceItemViewModel
             {
+                Sequence = index,
                 AvailableItems =   unitOfWork.ItemRepository.GetAll().Result.Select(i => new SelectListItem
                 {
                     Value = i.Id.ToString(),
